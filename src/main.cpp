@@ -6,7 +6,7 @@
 
 int main( int argc, char* argv[] )
 {
-	LOG("Application is running in debug mode")
+	LOG("Application is running in debug mode\n")
 
 	/** maybe turn the top level into something like this one day?
 	 * Game game(argc, argv);
@@ -60,7 +60,7 @@ int main( int argc, char* argv[] )
 					//do nothing	
 				}
 				prev_frame_ts = SDL_GetTicks();
-				std::cout << "running frame# " << frame_number << ", rng: " << mbl::rng() << std::endl;
+				LOG("running frame# ") LOG(frame_number) LOG(", rng: ") LOG(mbl::rng()) LOG("\n")
 
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
