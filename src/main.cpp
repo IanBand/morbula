@@ -1,5 +1,6 @@
 #include "sdlUtil.hpp"
 #include "../lib/gca-plus/GCAdapter.h"
+#include "morbulaState.hpp"
 
 int main( int argc, char* argv[] )
 {
@@ -20,7 +21,7 @@ int main( int argc, char* argv[] )
 
 
 	Uint32 prev_frame_ts;
-	Uint32 frame_numner = 0;
+	Uint32 frame_number = 0;
 
 
 
@@ -55,8 +56,7 @@ int main( int argc, char* argv[] )
 					//do nothing	
 				}
 				prev_frame_ts = SDL_GetTicks();
-				std::cout << "running frame# " << frame_numner << std::endl;
-				printf( "do this work?!\n" );
+				std::cout << "running frame# " << frame_number << ", rng: " << mbl::rng() << std::endl;
 
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
@@ -82,7 +82,7 @@ int main( int argc, char* argv[] )
 				
 				//Render red filled quad
 				SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-				if(frame_numner % 2 == 0){
+				if(frame_number % 2 == 0){
 					SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );	
 				}
 				else{
@@ -104,7 +104,7 @@ int main( int argc, char* argv[] )
 
 				// Update screen
 				SDL_RenderPresent( gRenderer );
-				++frame_numner;
+				++frame_number;
 			}
 		}
 	}

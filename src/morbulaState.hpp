@@ -10,6 +10,14 @@ extern "C" {
 
 ;namespace mbl{
 
+inline uint16_t rng(uint32_t seed = 0){
+	static uint32_t reg; //just seed with garbage uninitialized data by default lol
+	if(seed) reg = seed;
+
+	reg = reg * 22695477 + 1;
+	return reg >> 16; //upper 16 bits
+}
+
 /**
  * Stage Data Structures
  * 
@@ -73,6 +81,9 @@ inline StageCollision test_stage_collision {
     0
 };
 
+/*
+player data structrue
+*/
 enum PlayerActionState : int
 {
 	//https://smashboards.com/threads/list-of-all-possible-character-states-ie-downdamage-downwait.400270/#post-19055623
@@ -135,10 +146,14 @@ struct EnergyState
     
 };
 
+/*
+generic model/entity structures
+*/
 struct ModelData
 {
 	//2d model data will just be a list of animations
 	//animarions are just a list of images
+	//not quite but kinda
 };
 struct EntityRenderInfo
 {
@@ -154,6 +169,7 @@ struct EntityRenderInfo
 
 class Entity // abstract class 
 {
+	//entities need some way of advancing the global rng
 public:
 	virtual void computeNextState();
 	virtual void rollBackState(/* some pointer to a state*/);
@@ -169,10 +185,14 @@ private:
 
 	//implementations of this class will define their own entity states
 };
+
+/*
+Game State
+*/
 class GameState
 {
 public:
-	GameState(/*characters, stage*/);
+	GameState(StageCollision *stage_collision /*characters, stage*/);
 	void advanceGameState();
 		//cycle through active entities (bullets, enimies, players), compute their next states
 		//JUST worry about players for now
@@ -185,12 +205,11 @@ private:
 	//this memory makes up the scene
 	std::vector<Entity> *entities = NULL;
 	StageCollision stage; //may change, might need to store stage id?
-	unsigned long int rng;
 
 
 	//camera stuff
 	vec2 camera_position;
-	float scale; // pixel per float unit (1px / 1.0f);
+	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
 
 
 

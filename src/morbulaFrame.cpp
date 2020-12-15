@@ -8,4 +8,6 @@ void mbl::GameState::advanceGameState(){
     //check for entity colissions with eachother
     //call entity advanceState( surface pointer, colided entity pointer);
 
+    //update render
+
 };
