@@ -1,9 +1,13 @@
 #include "sdlUtil.hpp"
 #include "../lib/gca-plus/GCAdapter.h"
 #include "morbulaState.hpp"
+#include "debugLogger.hpp"
+
 
 int main( int argc, char* argv[] )
 {
+	LOG("Application is running in debug mode")
+
 	/** maybe turn the top level into something like this one day?
 	 * Game game(argc, argv);
 	 * if(game.init()){
