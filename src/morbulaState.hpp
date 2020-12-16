@@ -23,13 +23,12 @@ inline uint16_t rng(uint32_t seed = 0){
  */
 enum SurfaceType : int
 {
-    left_wall,
-    right_wall,
-    ground,
-    ceiling,
-    platform_ground, // ?
+    left_wall, //blue
+    right_wall, //green
+    ground, //grey
+    ceiling, //red
     none,
-    warp,
+    warp, // ehh there should probably just be warp boxes
     //just add flags for ice, grass (earth?) terrain types, dont make them entirely new enums
 };
 
@@ -43,11 +42,12 @@ struct Surface
     // bool left_ledge;
     // bool right_ledge;
     // bool no_tech;
-    // bool no_wall_jump;
+    // bool no_jump;
+	// no_tech and no_jump also apply to walls
     // bool platform; //means you can drop through
-    // bool crumble; //would also need crumble timer and shit
+	// int crumble_timer; // 0 means no ccrumble
     // function pointer to an event
-    // int warp id
+    // warp id
 };
 
 struct StageCollision{ //struct only details collision for now

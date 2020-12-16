@@ -7,8 +7,8 @@
 int main( int argc, char* argv[] )
 {
 	// dev build date/time message
-	LOG("development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
-	LOG("\ncheck https://github.com/IanBand/morbula for the most recent development push\n")
+	LOG("this is a development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
+	LOG("\ncheck https://github.com/IanBand/morbula for the latest development push!\n")
 
 	//game state
 	mbl::GameState game_state( &mbl::test_stage_collision);
