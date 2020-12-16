@@ -17,6 +17,10 @@ inline uint16_t rng(uint32_t seed = 0){
 	return reg >> 16; //upper 16 bits
 }
 
+/*
+	colors
+*/
+struct Color{char r, g, b, a;};
 /**
  * Stage Data Structures
  * 
@@ -30,6 +34,12 @@ enum SurfaceType : int
     none,
     warp, // ehh there should probably just be warp boxes
     //just add flags for ice, grass (earth?) terrain types, dont make them entirely new enums
+};
+inline const Color SurfaceColors[] = {
+	{0x00,0x20,0xff,0xff},
+	{0x20,0xff,0x00,0xff},
+	{0x77,0x77,0x77,0xff},
+	{0xff,0x00,0x20,0xff}
 };
 
 struct Surface
@@ -63,16 +73,16 @@ struct StageCollision{ //struct only details collision for now
 
 inline StageCollision test_stage_collision {
 	{
-        {0.0f,0.0f},
-        {0.0f,1.0f},
+        {-1.0f,-1.0f},
+        {1.0f,-1.0f},
         {1.0f,1.0f},
-        {1.0f,0.0f}
+        {-1.0f,1.0f},
 	},
 	{    
-		{0,1,left_wall},
-        {1,2,ground},
-        {2,3,right_wall},
-        {3,0,ceiling}
+		{0,1,ceiling},
+        {1,2,right_wall},
+        {2,3,ground},
+        {3,0,left_wall}
 	},
     100.0f,
     100.0f,
