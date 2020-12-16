@@ -4,6 +4,7 @@
 
 #ifndef DEBUG_LOGGER_HPP
     #define DEBUG_LOGGER_HPP
+    #include<iostream>
     #ifndef dblogs
         #define LOG(a) ;
     #else

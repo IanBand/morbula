@@ -6,19 +6,12 @@
 
 int main( int argc, char* argv[] )
 {
-	LOG("Application is running in debug mode\n")
-
-	/** maybe turn the top level into something like this one day?
-	 * Game game(argc, argv);
-	 * if(game.init()){
-	 * 		while(game.active()){
-	 * 			game.runFrame()
-	 * 		}
-	 * }
-	 * 
-	*/
+	// dev build date/time message
+	LOG("development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
+	LOG("\ncheck https://github.com/IanBand/morbula for the most recent development push\n")
 
 	//game state
+	mbl::GameState game_state( &mbl::test_stage_collision);
 
 	//menu state
 	//input manager
@@ -78,33 +71,14 @@ int main( int argc, char* argv[] )
 
 				// Compute next menu state
 				
-				// Clear screen
+				// Clear previous frame
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
-
-				
-				//Render red filled quad
-				SDL_Rect fillRect = { SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-				if(frame_number % 2 == 0){
-					SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );	
-				}
-				else{
-					SDL_SetRenderDrawColor( gRenderer, 0x00, 0x00, 0x00, 0xFF );
-				}	
-				SDL_RenderFillRect( gRenderer, &fillRect );
-
-
-
 				// Draw game state
-
-					// layer 0
-					// layer 1
-					// layer 2
-					// ect
+				game_state.renderStateToSDL( gRenderer );
 
 				// Draw menu state
-
 
 				// Update screen
 				SDL_RenderPresent( gRenderer );

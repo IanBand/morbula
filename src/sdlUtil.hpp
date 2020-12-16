@@ -12,12 +12,12 @@
 #include <cmath>
 
 
-//Im fairly sure this reaaaaaly needs its own namespace at least
-//https://stackoverflow.com/questions/9959563/why-do-i-get-a-multiple-definition-error-while-linking
+//make this into an SLDManager class
 
 //Screen dimension constants
 inline const int SCREEN_WIDTH = 640;
 inline const int SCREEN_HEIGHT = 480;
+inline const float SCREEN_ASPECT = ((float) SCREEN_WIDTH) / ((float) SCREEN_HEIGHT);
 inline const int SCREEN_FPS = 4;
 inline const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 

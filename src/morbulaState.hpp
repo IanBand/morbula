@@ -1,12 +1,11 @@
 #ifndef GAME_STATE_HPP
 #define GAME_STATE_HPP
+#include "sdlUtil.hpp"
 #include "morbulaCharAttr.hpp"
 #include <vector>
+#include "../lib/glm/vec2.hpp"
 
-extern "C" {
-#include <cglm/cglm.h>
-}
-
+//todo: define scene struct
 
 ;namespace mbl{
 
@@ -55,17 +54,17 @@ struct StageCollision{ //struct only details collision for now
     //a point forms a surface with itself and the next point in the points array
     //the Nth surface is defined by the Nth and (N+1)th points in the points array, and the Nth element in the surfaces array
 
-	std::vector<vec2> *vertices = NULL; 
+	std::vector<glm::vec2> *vertices = NULL; 
     std::vector<Surface> *surfaces = NULL;
     float height;
     float width;
     int id; //change to stage list enum?
 };
-inline std::vector<float> test_vetrices {
-        0.0f,0.0f,
-        0.0f,1.0f,
-        1.0f,1.0f,
-        1.0f,0.0f
+inline std::vector<glm::vec2> test_vetrices {
+        {0.0f,0.0f},
+        {0.0f,1.0f},
+        {1.0f,1.0f},
+        {1.0f,0.0f}
 };
 inline std::vector<Surface> test_surfaces {    
 		{0,1,left_wall},
@@ -74,7 +73,7 @@ inline std::vector<Surface> test_surfaces {
         {3,0,ceiling}
 };
 inline StageCollision test_stage_collision {
-	(std::vector<vec2>*) &test_vetrices,
+	&test_vetrices,
 	&test_surfaces,
     100.0f,
     100.0f,
@@ -115,8 +114,8 @@ struct PlayerState
 	//color overlay
 	//overlay opacity
 
-	vec2 prev_positions[5]; //keep track of previous positions for trailing effects & colission. dont shift array, just shift current index and have the prev frame indices increase mod 5
-	vec2 velocity;
+	glm::vec2 prev_positions[5]; //keep track of previous positions for trailing effects & colission. dont shift array, just shift current index and have the prev frame indices increase mod 5
+	glm::vec2 velocity;
 
 	
 	
@@ -138,8 +137,8 @@ struct PlayerState
 
 struct EnergyState
 {
-    vec2 position;
-    vec2 velocity;
+    glm::vec2 position;
+    glm::vec2 velocity;
     int value;
     //type
     //owner
@@ -192,13 +191,11 @@ Game State
 class GameState
 {
 public:
-	GameState(StageCollision *stage_collision /*characters, stage*/);
+	GameState(StageCollision *stage_collision /*other scene stuff*/);
 	void advanceGameState();
-		//cycle through active entities (bullets, enimies, players), compute their next states
-		//JUST worry about players for now
 	void rollBackGameState(/*some state pointer*/);
-	void loadScene(StageCollision *stage_collision /*characters, stage*/); // dont reload assets if current scene already has assets that are used in next scene
-	bool SDL_render(/* pointer to sdl render context, pointer to render settings*/); //maybe thats a better way of doing it
+	void loadScene(StageCollision *stage_collision /*other scene stuff*/);
+	void renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ );
 
 private:
 
@@ -208,7 +205,7 @@ private:
 
 
 	//camera stuff
-	vec2 camera_position;
+	glm::vec2 camera_position;
 	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
 
 
