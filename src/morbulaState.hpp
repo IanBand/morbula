@@ -3,7 +3,7 @@
 #include "sdlUtil.hpp"
 #include "morbulaCharAttr.hpp"
 #include <vector>
-#include "../lib/glm/vec2.hpp"
+#include <glm/vec2.hpp>
 
 //todo: define scene struct
 
@@ -54,27 +54,26 @@ struct StageCollision{ //struct only details collision for now
     //a point forms a surface with itself and the next point in the points array
     //the Nth surface is defined by the Nth and (N+1)th points in the points array, and the Nth element in the surfaces array
 
-	std::vector<glm::vec2> *vertices = NULL; 
-    std::vector<Surface> *surfaces = NULL;
+	std::vector<glm::vec2> vertices; 
+    std::vector<Surface> surfaces;
     float height;
     float width;
     int id; //change to stage list enum?
 };
-inline std::vector<glm::vec2> test_vetrices {
+
+inline StageCollision test_stage_collision {
+	{
         {0.0f,0.0f},
         {0.0f,1.0f},
         {1.0f,1.0f},
         {1.0f,0.0f}
-};
-inline std::vector<Surface> test_surfaces {    
+	},
+	{    
 		{0,1,left_wall},
         {1,2,ground},
         {2,3,right_wall},
         {3,0,ceiling}
-};
-inline StageCollision test_stage_collision {
-	&test_vetrices,
-	&test_surfaces,
+	},
     100.0f,
     100.0f,
     0
@@ -200,8 +199,8 @@ public:
 private:
 
 	//this memory makes up the scene
-	std::vector<Entity> *entities = NULL;
-	StageCollision stage; //may change, might need to store stage id?
+	std::vector<Entity> entities;
+	StageCollision *stage_collision; //may change, might need to store stage id?
 
 
 	//camera stuff
