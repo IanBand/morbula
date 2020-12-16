@@ -34,8 +34,8 @@ enum SurfaceType : int
 
 struct Surface
 {
-    int vertex1;
-    int vertex2;
+    int v1;
+    int v2;
     SurfaceType surface_type;
 
     //add other surface attribute flags here 
