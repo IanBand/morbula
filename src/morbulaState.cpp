@@ -20,7 +20,12 @@ uint16_t mbl::GameState::rng(){
 	rngr = rngr * 22695477 + 1;
 	return rngr >> 16; //upper 16 bits
 };
-
+int mbl::GameState::worldToCameraX(float x){
+    return (int) ((x - camera_position.x) * SCREEN_WIDTH * scale + (SCREEN_WIDTH >> 1));
+};
+int mbl::GameState::worldToCameraY(float y){
+    return (int) ((y - camera_position.y) * SCREEN_HEIGHT * -1 * SCREEN_ASPECT * scale + (SCREEN_HEIGHT >> 1));
+};
 void mbl::GameState::advanceGameState(){
     ++scene_frame_number;
 
@@ -28,21 +33,19 @@ void mbl::GameState::advanceGameState(){
 };
 void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ ){
 
-    //DEBUG render stage colission
+    //DEBUG render stage collision
     for(mbl::Surface surface : stage_collision->surfaces){
 
-        mbl::Color sc = mbl::SurfaceColors[(int) surface.surface_type];
-        SDL_SetRenderDrawColor( gRenderer, sc.r, sc.g, sc.b, 0xff);
-        
-        //scale = 1 / (camera height in floats). big scale = zoom in 
+        mbl::Color sc = mbl::SurfaceColors[surface.surface_type];
+        SDL_SetRenderDrawColor( gRenderer, sc.r, sc.g, sc.b, 0xff );
         SDL_RenderDrawLine( ctx, 
-        
-            (int) ((stage_collision->vertices[surface.v1].x - camera_position.x) * SCREEN_WIDTH  * scale + (SCREEN_WIDTH / 2)),
-            (int) ((stage_collision->vertices[surface.v1].y - camera_position.y) * SCREEN_HEIGHT * -1 * SCREEN_ASPECT * scale + (SCREEN_HEIGHT / 2)),
-            (int) ((stage_collision->vertices[surface.v2].x - camera_position.x) * SCREEN_WIDTH  * scale + (SCREEN_WIDTH / 2)),
-            (int) ((stage_collision->vertices[surface.v2].y - camera_position.y) * SCREEN_HEIGHT * -1 * SCREEN_ASPECT * scale + (SCREEN_HEIGHT / 2))
+            worldToCameraX(stage_collision->vertices[surface.v1].x),
+            worldToCameraY(stage_collision->vertices[surface.v1].y),
+            worldToCameraX(stage_collision->vertices[surface.v2].x),
+            worldToCameraY(stage_collision->vertices[surface.v2].y)
         );
-        LOG("surface: ") LOG(surface.surface_type) LOG("\n")
     }
+
+    //DEBUG render character collision
 };
 

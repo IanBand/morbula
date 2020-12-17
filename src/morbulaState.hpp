@@ -214,7 +214,8 @@ private:
 	void calcCameraPosition(); // calculate the camera world position and scale based on entities with camera flags
 	glm::vec2 camera_position;
 	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
-
+	int worldToCameraX(float x);
+	int worldToCameraY(float y);
 	
 
 
