@@ -8,15 +8,23 @@
 //todo: define scene struct
 
 ;namespace mbl{
-
-/*
-	colors
-*/
+/*******************************************************
+* Colors                                               *
+*******************************************************/
 struct Color{char r, g, b, a;};
-/**
- * Stage Data Structures
- * 
- */
+inline const Color white        {0xff,0xff,0xff,0xff};
+inline const Color grey         {0x88,0x88,0x88,0xff};
+inline const Color orange_gold	{0xfc,0x8c,0x00,0xff};
+inline const Color lime			{0x47,0xde,0x45,0xff};
+inline const Color purple       {0x4e,0x1e,0x9c,0xff};
+inline const Color red	        {0xbf,0x18,0x0f,0xff};
+inline const Color light_blue   {0x20,0x9c,0xe8,0xff};
+inline const Color deep_blue    {0x0e,0x0e,0xdb,0xff};
+inline const Color aqua         {0x20,0xbd,0xb2,0xff};
+
+/*******************************************************
+* Stage Data Structures	                               *
+*******************************************************/
 enum SurfaceType : int
 {
     left_wall, //blue
@@ -28,12 +36,11 @@ enum SurfaceType : int
     //just add flags for ice, grass (earth?) terrain types, dont make them entirely new enums
 };
 inline const Color SurfaceColors[] = {
-	{0x00,0x20,0xff,0xff},
-	{0x20,0xff,0x00,0xff},
+	{0x20,0x40,0xff,0xff},
+	{0x40,0xff,0x20,0xff},
 	{0x77,0x77,0x77,0xff},
-	{0xff,0x00,0x20,0xff}
+	{0xff,0x20,0x40,0xff}
 };
-
 struct Surface
 {
     int v1;
@@ -52,7 +59,8 @@ struct Surface
     // warp id
 };
 
-struct StageCollision{ //struct only details collision for now
+struct StageCollision{ //struct only details collision for now. this should be a whole ass stage struct.
+	//include camera bounds, liquid areas + positions
     //a point forms a surface with itself and the next point in the points array
     //the Nth surface is defined by the Nth and (N+1)th points in the points array, and the Nth element in the surfaces array
 
@@ -81,9 +89,48 @@ inline StageCollision test_stage_collision {
     0
 };
 
-/*
-player data structrue
-*/
+/*******************************************************
+* Generic Model & Entity Data Structures	           *
+*******************************************************/
+struct ModelData
+{
+	//2d model data will just be a list of animations
+	//animarions are just a list of images
+	//not quite but kinda
+};
+
+struct EntityRenderInfo
+{
+	glm::vec2 *world_position = NULL;      // faster to copy one pointer than to copy 2 floats?
+	int action_state_frame_count; 	// animation frame number
+	int action_state;  				// animation id, cast from enum
+	Color *overlay = NULL;		// pointer to overlay color 
+	ModelData *model_data = NULL;
+
+	// renderer will be able to render the model data based on position, action state, and frame count
+};
+
+class Entity // abstract class for entitys in a Morbula scene
+{
+	//entities need some way of advancing the global rng
+public:
+	virtual void computeNextState(){};
+	virtual void rollBackState(/* some pointer to a state*/){};
+	virtual EntityRenderInfo getRenderInfo(){}; 
+	
+	//virtual ModelData *loadModel(); //might not go here
+private:
+	Color overlay;
+	bool use_entity_colission;
+	bool use_stage_colission;
+	bool visible;
+	//implementations of this class will define their own entity states
+};
+
+
+/*******************************************************
+* Player Data Structures	                           *
+*******************************************************/
 enum PlayerActionState : int
 {
 	//https://smashboards.com/threads/list-of-all-possible-character-states-ie-downdamage-downwait.400270/#post-19055623
@@ -122,52 +169,15 @@ struct EnergyState
     //owner
     
 };
-
-/*
-generic model/entity structures
-*/
-struct ModelData
-{
-	//2d model data will just be a list of animations
-	//animarions are just a list of images
-	//not quite but kinda
-};
-
-struct EntityRenderInfo
-{
-	glm::vec2 *world_position = NULL;      // faster to copy one pointer than to copy 2 floats?
-	int action_state_frame_count; 	// animation frame number
-	int action_state;  				// animation id, cast from enum
-	Color *overlay = NULL;		// pointer to overlay color 
-	ModelData *model_data = NULL;
-
-	// renderer will be able to render the model data based on position, action state, and frame count
-};
-
-class Entity // abstract class 
-{
-	//entities need some way of advancing the global rng
-public:
-	virtual void computeNextState();
-	virtual void rollBackState(/* some pointer to a state*/);
-	virtual EntityRenderInfo getRenderInfo(); 
-	
-	//virtual ModelData *loadModel(); //might not go here
-private:
-	Color overlay;
-	bool use_entity_colission;
-	bool use_stage_colission;
-	bool visible;
-	//implementations of this class will define their own entity states
-};
-
 class Player: public Entity
 {
 public:
-	Player();
+	Player(CharacterAttribute* /* pointer to inputter */);
 	void computeNextState();
 	void rollBackState(/* some pointer to a state*/);
 	EntityRenderInfo getRenderInfo(); 
+
+	// ! REMOVE SELF FROM camera_entity_list UPON DISTRUCTION !
 private:
 	glm::vec2 prev_positions[5]; //keep track of previous positions for trailing effects & colission. dont shift array, just shift current index and have the prev frame indices increase mod 5
 	glm::vec2 velocity;
@@ -175,36 +185,36 @@ private:
 	int cur_health;
 	Direction direction; //left or right
 	bool grounded; //might just derive this from action state idk
-	bool used_dashed; //has player used air dash?
-	bool fast_falled; //has player used fast fall?
+	bool used_dashed = false; //has player used air dash?
+	bool fast_falled = false; //has player used fast fall?
 
 
-	CharacterAttribute attributes; //do not mutate
+	CharacterAttribute *attributes; //do not mutate
 	EquipmentState equipment_state;
 	PlayerActionState action_state; 
 	PlayerActionState prev_action_state; 
-	int action_state_frame_count; //how many frames has the player been in the current action state
+	int action_state_frame_count = 0; //how many frames has the player been in the current action state
 	
 
 };
-/*
-Game State
-*/
+/*******************************************************
+* Scene Structures                                     *
+*******************************************************/
 class GameState
 {
 public:
-	GameState(StageCollision *stage_collision /*other scene stuff*/);
+	GameState(StageCollision * /*other scene stuff*/);
 	void advanceGameState();
 	void rollBackGameState(/*some state pointer*/);
-	void loadScene(StageCollision *stage_collision /*other scene stuff*/);
-	void renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ );
+	void loadScene(StageCollision * /*other scene stuff*/);
+	void renderStateToSDL(SDL_Renderer * /*pointer to render settings*/);
 
 	
 
 private:
 
 	//this memory makes up the scene
-	std::vector<Entity> entities;
+	std::vector<Entity> entities; //should there be a collidable entities list? or just skil entities that aren't collidable
 	StageCollision *stage_collision; //may change, might need to store stage id?
 	unsigned int scene_frame_number;
 	uint32_t rngr; //register for rng, never directly read this
@@ -231,8 +241,6 @@ private:
 	//Item items[10]
 	//Enemy enimies[10]
 
-	//there should be an entity base class...?
-	//Just start with one player!!
 };
 }
 

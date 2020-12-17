@@ -7,8 +7,9 @@
 int main( int argc, char *argv[] )
 {
 	// dev build date/time message
-	LOG("this is a development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
-	LOG("\ncheck https://github.com/IanBand/morbula for the latest development push!\n")
+	LOG(" __       __   ______   _______   _______   __    __  __         ______\n/  \\     /  | /      \\ /       \\ /       \\ /  |  /  |/  |       /      \\\n$$  \\   /$$ |/$$$$$$  |$$$$$$$  |$$$$$$$  |$$ |  $$ |$$ |      /$$$$$$  |\n$$$  \\ /$$$ |$$ |  $$ |$$ |__$$ |$$ |__$$ |$$ |  $$ |$$ |      $$ |__$$ |\n$$$$  /$$$$ |$$ |  $$ |$$    $$< $$    $$< $$ |  $$ |$$ |      $$    $$ |\n$$ $$ $$/$$ |$$ |  $$ |$$$$$$$  |$$$$$$$  |$$ |  $$ |$$ |      $$$$$$$$ |\n$$ |$$$/ $$ |$$ \\__$$ |$$ |  $$ |$$ |__$$ |$$ \\__$$ |$$ |_____ $$ |  $$ |\n$$ | $/  $$ |$$    $$/ $$ |  $$ |$$    $$/ $$    $$/ $$       |$$ |  $$ |\n$$/      $$/  $$$$$$/  $$/   $$/ $$$$$$$/   $$$$$$/  $$$$$$$$/ $$/   $$/\n\n")
+	LOG("*** This is a development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
+	LOG("\n*** Check https://github.com/IanBand/morbula for the latest development push!\n\n")
 
 	//game state
 	mbl::GameState game_state( &mbl::test_stage_collision);

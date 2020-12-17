@@ -4,16 +4,19 @@
 namespace mbl {
 struct CharacterAttribute
 {
-	// character physical attributes
+	// character attributes
 
 	// loosely based on ssbm character attributes
     // https://docs.google.com/spreadsheets/d/1WqxJWDXbPDDYhjV5Vo34qTiCxmHSqg_Wr6GKKyLrH2M/
 
+	char name[20];
+
+
+	float gravity;
+	float init_height; //world space units
+	float init_width;  //world space units
 	//float rigidity; //landing/impact squash multiplier, wavedash squash/contortion
 	//float mass;
-	float gravity;
-	float height; //world space units
-	float width;  //world space units
 	//int init_health;
 
 	//float init_walk_velocity;
@@ -91,6 +94,13 @@ struct CharacterAttribute
 	//int booster_charrge_frame_5;
 
 	//you would in theory put stats for all common animations and mechanics here.
+};
+
+inline const CharacterAttribute test_char_attr {
+	"test_char_0",
+	1.0f, //gravity
+	1.0f, //init_height
+	1.0f  //init_width
 };
 }
 #endif

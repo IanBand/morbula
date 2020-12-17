@@ -31,6 +31,12 @@ void mbl::GameState::advanceGameState(){
 
     scale = std::sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
 };
+void mbl::GameState::calcCameraPosition(){
+    //loop through entities in camera_entity_list
+    //keep track of min and max x and y coordinates of the bounding boxes of the entities to create a "camera bounding box." respect camera bounds during this
+    //add margins to the master box
+    //compute scale from the box
+};
 void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ ){
 
     //DEBUG render stage collision
@@ -46,6 +52,25 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
         );
     }
 
-    //DEBUG render character collision
+    //DEBUG render character collision & camera bb
 };
 
+
+
+
+
+mbl::Player::Player(CharacterAttribute *_attributes /* pointer to inputter */){
+    attributes = _attributes;
+};
+void mbl::Player::rollBackState(/* some pointer to a state*/){
+
+};
+void mbl::Player::computeNextState(){
+
+};
+
+mbl::EntityRenderInfo mbl::Player::getRenderInfo(){
+    mbl::EntityRenderInfo info;
+    
+    return info;
+};
