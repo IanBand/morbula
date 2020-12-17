@@ -14,6 +14,9 @@
 
 //make this into an SLDManager class
 
+//or give namespace?
+//https://stackoverflow.com/questions/51750227/namespace-for-external-library-in-c
+
 //Screen dimension constants
 inline const int SCREEN_WIDTH = 640;
 inline const int SCREEN_HEIGHT = 480;

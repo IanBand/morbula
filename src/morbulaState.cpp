@@ -24,7 +24,7 @@ uint16_t mbl::GameState::rng(){
 void mbl::GameState::advanceGameState(){
     ++scene_frame_number;
 
-    scale = glm::sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
+    scale = std::sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
 };
 void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ ){
 
