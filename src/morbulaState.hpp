@@ -109,32 +109,9 @@ struct EquipmentState
 	bool cascade_beam; //absorption energy particals damage other enenimies when they pass over them, and generate more particles
 };
 
-struct PlayerState
-{
-
-	//color overlay
-	//overlay opacity
-
-	glm::vec2 prev_positions[5]; //keep track of previous positions for trailing effects & colission. dont shift array, just shift current index and have the prev frame indices increase mod 5
-	glm::vec2 velocity;
-
-	
-	
-	int health;
-
-	Direction direction; //left or right
-	bool grounded; //might just derive this from action state idk
-	bool used_dashed; //has player used air dash?
-	bool fast_falled; //has player used fast fall?
+//struct PlayerState{}; might keep this around for barebones player state for ggpo
 
 
-	EquipmentState equipment_state;
-	PlayerActionState action_state; 
-	PlayerActionState prev_action_state; 
-	int action_state_frame_count; //how many frames has the player been in the current action state
-	
-
-};
 
 struct EnergyState
 {
@@ -155,13 +132,13 @@ struct ModelData
 	//animarions are just a list of images
 	//not quite but kinda
 };
+
 struct EntityRenderInfo
 {
-	//olc::vu2d *world_position;      // faster to copy one pointer than to copy 2 floats?
+	glm::vec2 *world_position = NULL;      // faster to copy one pointer than to copy 2 floats?
 	int action_state_frame_count; 	// animation frame number
 	int action_state;  				// animation id, cast from enum
-	// olc::rgbacolor *overlay;		// pointer to overlay color 
-
+	Color *overlay = NULL;		// pointer to overlay color 
 	ModelData *model_data = NULL;
 
 	// renderer will be able to render the model data based on position, action state, and frame count
@@ -177,15 +154,39 @@ public:
 	
 	//virtual ModelData *loadModel(); //might not go here
 private:
-	//color overlay
+	Color overlay;
 	bool use_entity_colission;
 	bool use_stage_colission;
 	bool visible;
-
-
 	//implementations of this class will define their own entity states
 };
 
+class Player: public Entity
+{
+public:
+	Player();
+	void computeNextState();
+	void rollBackState(/* some pointer to a state*/);
+	EntityRenderInfo getRenderInfo(); 
+private:
+	glm::vec2 prev_positions[5]; //keep track of previous positions for trailing effects & colission. dont shift array, just shift current index and have the prev frame indices increase mod 5
+	glm::vec2 velocity;
+
+	int cur_health;
+	Direction direction; //left or right
+	bool grounded; //might just derive this from action state idk
+	bool used_dashed; //has player used air dash?
+	bool fast_falled; //has player used fast fall?
+
+
+	CharacterAttribute attributes; //do not mutate
+	EquipmentState equipment_state;
+	PlayerActionState action_state; 
+	PlayerActionState prev_action_state; 
+	int action_state_frame_count; //how many frames has the player been in the current action state
+	
+
+};
 /*
 Game State
 */
@@ -211,9 +212,13 @@ private:
 
 
 	//camera stuff
+	//make camera its own class?
 	void calcCameraPosition(); // calculate the camera world position and scale based on entities with camera flags
 	glm::vec2 camera_position;
 	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
+	float scale_max;
+	float scale_min;
+	std::vector<Entity*> camera_entity_list; //list of entity pointers that the camera must include
 	int worldToCameraX(float x);
 	int worldToCameraY(float y);
 	

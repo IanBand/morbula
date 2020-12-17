@@ -35,5 +35,10 @@ g++ ./lib/gca-plus/*.cpp -lusb-1.0 ./src/*.cpp -IC:\msys64\mingw32\include\SDL2 
 * find the name of a library in its package config file, which is located in ```[mysis64-install-location]\mingw64\lib\pkgconfig\[libary name].pc```
 
 
+## Ideas
+
+* co-op camera: two local players have a split screen, each with their own camera tracking them. If they come within range of eachother in world space, their cameras move towards where they would turn into one camera. Add hysteresis so the camera can more easily stay locked as a single wide camera.
+
+
 
 
