@@ -14,7 +14,7 @@ void mbl::GameState::loadScene(StageCollision *_stage_collision /*characters, st
     camera_position = glm::vec2(0.0f,0.0f); //world space coordinate that the camear is pointing at, set to scene init camera?
     scale = 0.25;
     scene_frame_number = 0;
-    rngr = 0; //give the rng a seed;
+    rngr = 0; //seed the rng;
 };
 uint16_t mbl::GameState::rng(){
 	rngr = rngr * 22695477 + 1;
@@ -24,7 +24,7 @@ uint16_t mbl::GameState::rng(){
 void mbl::GameState::advanceGameState(){
     ++scene_frame_number;
 
-    scale = sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
+    scale = glm::sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
 };
 void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ ){
 
