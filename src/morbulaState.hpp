@@ -1,6 +1,6 @@
 #ifndef GAME_STATE_HPP
 #define GAME_STATE_HPP
-#include "sdlUtil.hpp"
+#include "sdlUtil.hpp" //only needed for SDL_Renderer
 #include "morbulaCharAttr.hpp"
 #include <vector>
 #include <glm/vec2.hpp>
@@ -8,14 +8,6 @@
 //todo: define scene struct
 
 ;namespace mbl{
-
-inline uint16_t rng(uint32_t seed = 0){
-	static uint32_t reg; //just seed with garbage uninitialized data by default lol
-	if(seed) reg = seed;
-
-	reg = reg * 22695477 + 1;
-	return reg >> 16; //upper 16 bits
-}
 
 /*
 	colors
@@ -148,7 +140,7 @@ struct EnergyState
 {
     glm::vec2 position;
     glm::vec2 velocity;
-    int value;
+    int energy_value;
     //type
     //owner
     
@@ -206,16 +198,24 @@ public:
 	void loadScene(StageCollision *stage_collision /*other scene stuff*/);
 	void renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ );
 
+	
+
 private:
 
 	//this memory makes up the scene
 	std::vector<Entity> entities;
 	StageCollision *stage_collision; //may change, might need to store stage id?
+	unsigned int scene_frame_number;
+	uint32_t rngr; //register for rng, never directly read this
+	uint16_t rng(); //call this function when you want a random number for the game state
 
 
 	//camera stuff
+	void calcCameraPosition(); // calculate the camera world position and scale based on entities with camera flags
 	glm::vec2 camera_position;
 	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
+
+	
 
 
 

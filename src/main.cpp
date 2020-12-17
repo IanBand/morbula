@@ -4,7 +4,7 @@
 #include "debugLogger.hpp"
 
 
-int main( int argc, char* argv[] )
+int main( int argc, char *argv[] )
 {
 	// dev build date/time message
 	LOG("this is a development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
@@ -17,10 +17,7 @@ int main( int argc, char* argv[] )
 	//input manager
 
 
-	Uint32 prev_frame_ts;
-	Uint32 frame_number = 0;
-
-
+	uint32_t prev_frame_ts;
 
 	//Start up SDL and create window
 	if( !init() )
@@ -53,7 +50,6 @@ int main( int argc, char* argv[] )
 					//do nothing	
 				}
 				prev_frame_ts = SDL_GetTicks();
-				LOG("running frame# ") LOG(frame_number) LOG(", rng: ") LOG(mbl::rng()) LOG("\n")
 
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
@@ -68,11 +64,12 @@ int main( int argc, char* argv[] )
 				// Get player input
 
 				// Compute next game state
+				game_state.advanceGameState();
 
 				// Compute next menu state
 				
 				// Clear previous frame
-				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				SDL_SetRenderDrawColor( gRenderer, 0x00, 0x00, 0x00, 0xFF );
 				SDL_RenderClear( gRenderer );
 
 				// Draw game state
@@ -82,7 +79,6 @@ int main( int argc, char* argv[] )
 
 				// Update screen
 				SDL_RenderPresent( gRenderer );
-				++frame_number;
 			}
 		}
 	}

@@ -9,7 +9,7 @@
 //idk bout these ones, might go in main idk idk
 #include <stdio.h> 
 #include <string>
-#include <cmath>
+#include <cmath> //gross lol
 
 
 //make this into an SLDManager class
@@ -18,7 +18,7 @@
 inline const int SCREEN_WIDTH = 640;
 inline const int SCREEN_HEIGHT = 480;
 inline const float SCREEN_ASPECT = ((float) SCREEN_WIDTH) / ((float) SCREEN_HEIGHT);
-inline const int SCREEN_FPS = 4;
+inline const int SCREEN_FPS = 60;
 inline const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 
 //The window we'll be rendering to
@@ -35,6 +35,14 @@ void close();
 
 //Loads individual image as texture
 SDL_Texture* loadTexture( std::string path );
+
+inline uint16_t globalRng(uint32_t seed = 0){
+	static uint32_t reg; //just seed with garbage uninitialized data by default lol
+	if(seed) reg = seed;
+
+	reg = reg * 22695477 + 1;
+	return reg >> 16; //upper 16 bits
+}
 
 
 #endif
