@@ -19,7 +19,7 @@
 would use a different macro
 #define INPUT(a) std::cin >> *a;
 
-//#define LOGBREAK "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n"
+//#define line "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n"
 
 
 */

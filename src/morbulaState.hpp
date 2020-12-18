@@ -112,18 +112,26 @@ struct EntityRenderInfo
 
 class Entity // abstract class for entitys in a Morbula scene
 {
-	//entities need some way of advancing the global rng
 public:
 	virtual void computeNextState(){};
 	virtual void rollBackState(/* some pointer to a state*/){};
 	virtual EntityRenderInfo getRenderInfo(){}; 
+	virtual void DEBUG_renderCollision(SDL_Renderer *){};
+	//virtual void entityCollide(){};
+	//virtual void stageCollide(){}; 
 	
 	//virtual ModelData *loadModel(); //might not go here
-private:
+protected:
 	Color overlay;
-	bool use_entity_colission;
-	bool use_stage_colission;
 	bool visible;
+	glm::vec2 position;
+	float camera_box_height;
+	float camera_box_width;
+
+	//ehh? for now Ill use these but I may keep lists of pointers to entities to keep track of which  
+	bool in_camera_view;
+	bool use_entity_colission; 
+	bool use_stage_colission;
 	//implementations of this class will define their own entity states
 };
 
@@ -134,16 +142,22 @@ private:
 enum PlayerActionState : int
 {
 	//https://smashboards.com/threads/list-of-all-possible-character-states-ie-downdamage-downwait.400270/#post-19055623
+	//consider aerial positional states to allow for tech like downbacks https://wiki.supermetroid.run/Hitbox_Manipulation#Downback
+	//walljumps should be a product of "checking"
 	idle,
 	walk_1,
 	run
 };
 
+inline const bool left = true;
+inline const bool right = false;
 enum Direction : int
 {
-	left,
-	right,
-	//up, down ? 
+	up,
+	down,
+	neutral,
+	half_up,
+	half_down
 };
 
 struct EquipmentState
@@ -176,6 +190,7 @@ public:
 	void computeNextState();
 	void rollBackState(/* some pointer to a state*/);
 	EntityRenderInfo getRenderInfo(); 
+	void DEBUG_renderCollision(SDL_Renderer *);
 
 	// ! REMOVE SELF FROM camera_entity_list UPON DISTRUCTION !
 private:
@@ -203,10 +218,10 @@ private:
 class GameState
 {
 public:
-	GameState(StageCollision * /*other scene stuff*/);
+	GameState(StageCollision *, std::vector<mbl::Entity> *);
 	void advanceGameState();
 	void rollBackGameState(/*some state pointer*/);
-	void loadScene(StageCollision * /*other scene stuff*/);
+	void loadScene(StageCollision *, std::vector<mbl::Entity> *);
 	void renderStateToSDL(SDL_Renderer * /*pointer to render settings*/);
 
 	
@@ -214,7 +229,7 @@ public:
 private:
 
 	//this memory makes up the scene
-	std::vector<Entity> entities; //should there be a collidable entities list? or just skil entities that aren't collidable
+	std::vector<Entity> *entities; //should there be a collidable entities list? or just skil entities that aren't collidable
 	StageCollision *stage_collision; //may change, might need to store stage id?
 	unsigned int scene_frame_number;
 	uint32_t rngr; //register for rng, never directly read this
