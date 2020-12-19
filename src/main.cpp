@@ -12,17 +12,10 @@ int main( int argc, char *argv[] )
 	LOG("\n*** Check https://github.com/IanBand/morbula for the latest development push!\n\n")
 
 
-	//init test data
-	mbl::Player test_player( &mbl::test_char_attr /*pointer to inputter*/);
-	std::vector<mbl::Entity> test_entity_list; //object slicing happening here
-	//https://www.xspdf.com/resolution/53778619.html
-	//https://softwareengineering.stackexchange.com/questions/247245/a-vector-of-pointers-to-different-derived-classes-of-the-same-base-class
-	//https://stackoverflow.com/questions/34383979/c-vector-of-base-class-objects/34384868
-	// seems like we use a vector of base class smart pointers
-	test_entity_list.push_back(test_player);
+	
 
 	//game state
-	mbl::GameState game_state( &mbl::test_stage_collision, &test_entity_list );
+	mbl::GameState game_state;
 
 	//menu state
 	//input manager

@@ -9,9 +9,11 @@ Made referencing the [Lazy Foo SDL tutorial](https://lazyfoo.net/tutorials/SDL/i
 - Keep the game state sufficently sepeprated from the rendering logic to allow for rollback netcode via [ggpo](https://github.com/pond3r/ggpo)
 
 ## Code Improvements
-- Create a makefile
+- Create a makefile (!)
+- only compiles with -w (supresses all warnings)
 - Use namespaces in some more places
 - Probably many misspellings of "collision"
+- use smart pointers or get a memory leak checker to work https://stackoverflow.com/questions/17855662/memory-check-library-for-mingw  http://wyw.dcweb.cn/leakage.htm
 - https://github.com/lefticus/cppbestpractices/blob/master/00-Table_of_Contents.md
 
 ## Toolchain
@@ -25,21 +27,26 @@ Made referencing the [Lazy Foo SDL tutorial](https://lazyfoo.net/tutorials/SDL/i
 - [gca+](https://github.com/YonicDev/gca-plus)
 - [libusb](https://packages.msys2.org/package/mingw-w64-x86_64-libusb)
 
+## Ideas & Notes
+
+* co-op camera: two local players have a split screen, each with their own camera tracking them. If they come within range of eachother in world space, their cameras move towards where they would turn into one camera. Add hysteresis so the camera can more easily stay locked as a single wide camera.
+* Different character ECBs are different sizes in melee. It looks like they actually dont collide with eachother eather, characters just exert a force (I will make this proportional to their mass) on eachother when their ECBs overlap
+
+
 ## Build It
+Makefile coming soon!
+
 ```bash
-g++ -Wall -Woverloaded-virtual -Wnon-virtual-dtor ./lib/gca-plus/*.cpp -lusb-1.0 ./src/*.cpp -IC:\msys64\mingw32\include\SDL2 -LC:\msys64\mingw32\lib -w -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o ./bin/game
+g++ -w ./lib/gca-plus/*.cpp -lusb-1.0 ./src/*.cpp -IC:\msys64\mingw32\include\SDL2 -LC:\msys64\mingw32\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -std=c++17 -o ./bin/game -Ddblogs
 ```
+
+* warnings: ```-Wall``` for all warnings or ```-w ``` to supress all warnings. other warning types exist to give you some granual control over which warnings you want, such warnings can be found can be found [here](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md)
 * add ``` -Wl,-subsystem,windows ``` option to detach from console at startup
 * add ``` -Ddblogs ``` option to build with debug logs enabled, they wont be printed if the above option is also used
 * you may have to replace ```-IC:\msys64\mingw32\include\SDL2``` and ```-LC:\msys64\mingw32\lib``` with your own install directories if you chose something other than the default install locations
 * libraries ```-l*``` are placed directly after the source files that use them
 * find the name of a library in its package config file, which is located in ```[mysis64-install-location]\mingw64\lib\pkgconfig\[libary name].pc```
 
-
-## Ideas & Notes
-
-* co-op camera: two local players have a split screen, each with their own camera tracking them. If they come within range of eachother in world space, their cameras move towards where they would turn into one camera. Add hysteresis so the camera can more easily stay locked as a single wide camera.
-* Different character ECBs are different sizes in melee. It looks like they actually dont collide with eachother eather, characters just exert a force (I will make this proportional to their mass) on eachother when their ECBs overlap
 
 
 

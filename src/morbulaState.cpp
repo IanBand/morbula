@@ -1,22 +1,44 @@
 #include "morbulaState.hpp"
 #include "debugLogger.hpp"
 
-mbl::GameState::GameState(StageCollision *_stage_collision , std::vector<mbl::Entity> *_entities){
-    loadScene( _stage_collision, _entities );
-};
-void mbl::GameState::rollBackGameState(/*some state pointer? */){
+mbl::GameState::GameState(){
 
-};
-void mbl::GameState::loadScene(StageCollision *_stage_collision, std::vector<mbl::Entity> *_entities){
-    // dont reload assets if current scene already has assets that are used in next scene
-    // this is a premature optimization, dont implement it now
+    
+	//https://www.xspdf.com/resolution/53778619.html
+	//https://softwareengineering.stackexchange.com/questions/247245/a-vector-of-pointers-to-different-derived-classes-of-the-same-base-class
+	//https://stackoverflow.com/questions/34383979/c-vector-of-base-class-objects/34384868
+	// seems like we use a vector of base class smart pointers
 
-    entities = _entities;
-    stage_collision = _stage_collision;
+    //init test data
+    // GameState owns all entity pointers
+    entities.push_back(new mbl::Player( &mbl::test_char_attr /*pointer to inputter*/));
+
+    stage_collision = &mbl::test_stage_collision; //crashes without this, need to put stage in another data structure
+
     camera_position = glm::vec2(0.0f,0.0f); //world space coordinate that the camear is pointing at, set to scene init camera?
     scale = 0.25;
     scene_frame_number = 0;
     rngr = 0; //seed the rng;
+
+
+    //loadScene();
+};
+mbl::GameState::~GameState(){
+    for(mbl::Entity *entity : entities ){
+        delete entity;
+    }
+}
+void mbl::GameState::rollBackGameState(/*some state pointer? */){
+
+};
+void mbl::GameState::loadScene(){
+    // dont reload assets if current scene already has assets that are used in next scene
+    // this is a premature optimization, dont implement it now
+
+
+    //entities = _entities;
+    //stage_collision = _stage_collision;
+
 };
 uint16_t mbl::GameState::rng(){
 	rngr = rngr * 22695477 + 1;
@@ -57,8 +79,8 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
     }
 
     //DEBUG render entity collision
-    for(mbl::Entity entity : *entities ){
-        entity.DEBUG_renderCollision( ctx );
+    for(mbl::Entity *entity : entities ){
+        entity->DEBUG_renderCollision( ctx );
     }
 };
 

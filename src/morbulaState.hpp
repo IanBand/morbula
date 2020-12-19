@@ -3,6 +3,7 @@
 #include "sdlUtil.hpp" //only needed for SDL_Renderer
 #include "morbulaCharAttr.hpp"
 #include <vector>
+#include <memory>
 #include <glm/vec2.hpp>
 
 //todo: define scene struct
@@ -218,10 +219,11 @@ private:
 class GameState
 {
 public:
-	GameState(StageCollision *, std::vector<mbl::Entity> *);
+	GameState();
+	~GameState();
 	void advanceGameState();
 	void rollBackGameState(/*some state pointer*/);
-	void loadScene(StageCollision *, std::vector<mbl::Entity> *);
+	void loadScene();
 	void renderStateToSDL(SDL_Renderer * /*pointer to render settings*/);
 
 	
@@ -229,7 +231,7 @@ public:
 private:
 
 	//this memory makes up the scene
-	std::vector<Entity> *entities; //should there be a collidable entities list? or just skil entities that aren't collidable
+	std::vector<mbl::Entity*> entities; //should there be a collidable entities list? or just skip entities that aren't collidable
 	StageCollision *stage_collision; //may change, might need to store stage id?
 	unsigned int scene_frame_number;
 	uint32_t rngr; //register for rng, never directly read this
@@ -243,7 +245,7 @@ private:
 	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
 	float scale_max;
 	float scale_min;
-	std::vector<Entity*> camera_entity_list; //list of entity pointers that the camera must include
+	std::vector<mbl::Entity*> camera_entity_list; //list of entity pointers that the camera must include
 	int worldToCameraX(float x);
 	int worldToCameraY(float y);
 	
