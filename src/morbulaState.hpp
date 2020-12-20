@@ -106,6 +106,7 @@ public:
 	virtual void computeNextState(){};
 	virtual void rollBackState(/* some pointer to a state*/){};
 	void DEBUG_draw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
+	//glm::vec2 ecb_right(){return glm::vec2(0.0f,0.0f)}; // should these be in world space or entity space???
 	// have a debug draw for ecb, camera, ect...
 	//virtual void entityCollide(){};
 	//virtual void stageCollide(){}; 
@@ -113,11 +114,11 @@ public:
 	//virtual ModelData *loadModel(); //might not go here
 protected:
 	//render & phisical info
-	glm::vec2 world_pos;      // world position
+	glm::vec2 world_position; // also reffered to as base position
 	int action_state_frame_count = 0; 	// animation frame number
 	int action_state;  				// animation id, cast from enum
-	glm::vec2 bounding_box_tl;	//camera box top left coordinate, relative to world_pos
-	glm::vec2 bounding_box_br;	//camera box bottom right coordinate, relative to world_pos
+	glm::vec2 bounding_box_size;	//dimensions of bounding box
+	glm::vec2 bounding_box_offset;	//offset of center of bounding box from base position
 
 	//render info
 	Color overlay;
@@ -246,8 +247,8 @@ private:
 	float scale_max;
 	float scale_min;
 	std::vector<mbl::Entity*> camera_entity_list; //list of entity pointers that the camera must include
-	int worldToCameraX(float x); //depreciated
-	int worldToCameraY(float y); //depreciated
+	int worldToCameraX(float x); //depreciated?
+	int worldToCameraY(float y); //depreciated?
 	//void SDL_DrawLineFromWorldCoord( SDL_Renderer*, float, float, float, float); //converts world coordinates to screen and renders line to context
 	
 	static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);

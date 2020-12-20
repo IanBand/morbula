@@ -19,7 +19,7 @@ mbl::GameState::GameState(){
 
     stage_collision = &mbl::test_stage_collision; //crashes without this, need to put stage in another data structure
 
-    camera_position = glm::vec2(0.0f,0.0f); //world space coordinate that the camear is pointing at, set to scene init camera?
+    camera_position = glm::vec2(0.0f,0.2f); //world space coordinate that the camear is pointing at, set to scene init camera?
     scale = 0.25;
     scene_frame_number = 0;
     rngr = 0; //seed the rng;
@@ -66,8 +66,8 @@ void mbl::GameState::SDL_DrawLineFromWorldCoord( SDL_Renderer* ctx, glm::vec2* c
 };
 void mbl::GameState::advanceGameState(){
     ++scene_frame_number;
-    scale = 0.25;
-    scale = std::sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
+    scale = 0.15;
+    scale = std::sin(scene_frame_number * 0.025) * 0.01 + 0.15; 
 };
 void mbl::GameState::calcCameraPosition(){
     //loop through entities in camera_entity_list
@@ -106,9 +106,85 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
 /*******************************************************
 * Entity                                               *
 *******************************************************/
-void mbl::Entity::DEBUG_draw(SDL_Renderer* ctx, glm::vec2* camera_pos, float scale, void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float))
-const{
-    drawLine(ctx, camera_pos, scale, 1.0f,1.0f,0.0f,0.0f);
+void mbl::Entity::DEBUG_draw(SDL_Renderer* ctx, glm::vec2* camera_pos, float scale, void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const{
+    
+    
+    //draw world_position crosshairs
+    float crosshair_size = 0.1f;
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x - crosshair_size,
+        world_position.y,
+        world_position.x + crosshair_size,
+        world_position.y
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x,
+        world_position.y - crosshair_size,
+        world_position.x,
+        world_position.y + crosshair_size
+    );
+
+
+    //draw ecb diamond
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x,
+        world_position.y + ecb_bottom,
+        world_position.x + ecb_right,
+        world_position.y + ecb_mid
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x + ecb_right,
+        world_position.y + ecb_mid,
+        world_position.x,
+        world_position.y + ecb_top
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x,
+        world_position.y + ecb_top,
+        world_position.x - ecb_left,
+        world_position.y + ecb_mid
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x - ecb_left,
+        world_position.y + ecb_mid,
+        world_position.x,
+        world_position.y + ecb_bottom
+    );
+
+
+
+    //draw bounding box / camera box
+    //bounding_box_size - dimensions of bounding box
+	//bounding_box_offset - offset of center of bounding box from base position
+
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + bounding_box_size.y,
+        world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + 0
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + 0,
+        world_position.x + bounding_box_offset.x - bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + 0
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x + bounding_box_offset.x - bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + 0,
+        world_position.x + bounding_box_offset.x - bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + bounding_box_size.y
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x + bounding_box_offset.x - bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + bounding_box_size.y,
+        world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
+        world_position.y + bounding_box_offset.y + bounding_box_size.y
+    );
+    
+
+
+
 };
 
 /*******************************************************
@@ -118,9 +194,9 @@ mbl::Player::Player( CharacterAttribute *_attributes /* pointer to inputter */){
     
     attributes = _attributes;
     //all Entities have these aspects
-    world_pos = glm::vec2(0.0f, 1.0f); // TEMP INIT POSITION
-    bounding_box_tl	= glm::vec2(0.0f, 0.0f);
-	bounding_box_br = glm::vec2(0.0f, 0.0f);
+    world_position = glm::vec2(0.0f, 1.0f); // TEMP INIT POSITION
+    bounding_box_size = glm::vec2(0.4f, 0.4f);
+	bounding_box_offset = glm::vec2(0.0f, 0.0f);
     
     overlay = {0xff,0xff,0xff,0x00};
 
@@ -142,30 +218,6 @@ mbl::Player::Player( CharacterAttribute *_attributes /* pointer to inputter */){
 void mbl::Player::rollBackState(/* some pointer to a state*/){
 
 };
-/*
-void mbl::Player::DEBUG_renderCollision(SDL_Renderer * ctx){
-    //LOG("Entity position: (") LOG(position.x) LOG(", ") LOG(position.y) LOG(")\n")
-
-    // draw base position crosshair
-    float crosshair_size = 0.1f; //half of the crosshair size in world space units
-    mbl::Color cc = mbl::light_blue;
-    
-    SDL_SetRenderDrawColor( ctx, cc.r, cc.g, cc.b, 0xff );
-    SDL_RenderDrawLine( ctx,
-        worldToCameraX(position.x - crosshair_size),
-        worldToCameraX(position.y),
-        worldToCameraY(position.x + crosshair_size),
-        worldToCameraY(position.y)
-    );
-    SDL_RenderDrawLine( ctx,
-        worldToCameraX(position.x),
-        worldToCameraX(position.y - crosshair_size),
-        worldToCameraY(position.x),
-        worldToCameraY(position.y + crosshair_size)
-    );
-    
-}
-*/
 void mbl::Player::computeNextState(){
 
 };
