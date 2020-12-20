@@ -12,7 +12,10 @@ int main( int argc, char *argv[] )
 	LOG("\n*** Check https://github.com/IanBand/morbula for the latest development push!\n\n")
 
 
-	
+    auto f1 = [](int x, int y) { return x + y; };
+
+    std::cout << f1(2, 3) << std::endl;
+
 
 	//game state
 	mbl::GameState game_state;

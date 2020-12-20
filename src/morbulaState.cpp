@@ -1,6 +1,10 @@
 #include "morbulaState.hpp"
 #include "debugLogger.hpp"
 
+
+/*******************************************************
+* Game State                                           *
+*******************************************************/
 mbl::GameState::GameState(){
 
     
@@ -50,10 +54,20 @@ int mbl::GameState::worldToCameraX(float x){
 int mbl::GameState::worldToCameraY(float y){
     return (int) ((y - camera_position.y) * SCREEN_HEIGHT * -1 * SCREEN_ASPECT * scale + (SCREEN_HEIGHT >> 1));
 };
+void mbl::GameState::SDL_DrawLineFromWorldCoord( SDL_Renderer* ctx, glm::vec2* camera_position, float scale, float x1, float y1, float x2, float y2)
+{
+    //convert world space to camera space, draw line
+    SDL_RenderDrawLine( ctx,
+        (int) ((x1 - camera_position->x) * SCREEN_WIDTH * scale + (SCREEN_WIDTH >> 1)),
+        (int) ((y1 - camera_position->y) * SCREEN_HEIGHT * -1 * SCREEN_ASPECT * scale + (SCREEN_HEIGHT >> 1)),
+        (int) ((x2 - camera_position->x) * SCREEN_WIDTH * scale + (SCREEN_WIDTH >> 1)),
+        (int) ((y2 - camera_position->y) * SCREEN_HEIGHT * -1 * SCREEN_ASPECT * scale + (SCREEN_HEIGHT >> 1))
+    );
+};
 void mbl::GameState::advanceGameState(){
     ++scene_frame_number;
     scale = 0.25;
-    //scale = std::sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
+    scale = std::sin(scene_frame_number * 0.025) * 0.125 + 0.25; 
 };
 void mbl::GameState::calcCameraPosition(){
     //loop through entities in camera_entity_list
@@ -69,7 +83,7 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
     for(mbl::Surface surface : stage_collision->surfaces){
 
         mbl::Color sc = mbl::SurfaceColors[surface.surface_type];
-        SDL_SetRenderDrawColor( gRenderer, sc.r, sc.g, sc.b, 0xff );
+        SDL_SetRenderDrawColor( ctx, sc.r, sc.g, sc.b, 0xff );
         SDL_RenderDrawLine( ctx, 
             worldToCameraX(stage_collision->vertices[surface.v1].x),
             worldToCameraY(stage_collision->vertices[surface.v1].y),
@@ -79,43 +93,79 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
     }
 
     //DEBUG render entity collision
-    for(mbl::Entity *entity : entities ){
-        entity->DEBUG_renderCollision( ctx );
+    mbl::Color cc = mbl::light_blue;
+    SDL_SetRenderDrawColor( ctx, cc.r, cc.g, cc.b, 0xff );
+
+    for(const mbl::Entity *entity : entities ){
+        //entity->getRenderInfo();//DEBUG_renderCollision( ctx );
+        entity->DEBUG_draw(ctx, &camera_position, scale, mbl::GameState::SDL_DrawLineFromWorldCoord);
+            
     }
 };
 
+/*******************************************************
+* Entity                                               *
+*******************************************************/
+void mbl::Entity::DEBUG_draw(SDL_Renderer* ctx, glm::vec2* camera_pos, float scale, void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float))
+const{
+    drawLine(ctx, camera_pos, scale, 1.0f,1.0f,0.0f,0.0f);
+};
 
-
-
-
+/*******************************************************
+* Player                                               *
+*******************************************************/
 mbl::Player::Player( CharacterAttribute *_attributes /* pointer to inputter */){
     
     attributes = _attributes;
+    //all Entities have these aspects
+    world_pos = glm::vec2(0.0f, 1.0f); // TEMP INIT POSITION
+    bounding_box_tl	= glm::vec2(0.0f, 0.0f);
+	bounding_box_br = glm::vec2(0.0f, 0.0f);
+    
+    overlay = {0xff,0xff,0xff,0x00};
 
-    position = glm::vec2(0.0f, 1.0f); // TEMP INIT POSITION
 
-    //all players have these aspects
-    camera_box_height = 1.0f;
-	camera_box_width = 1.0f;
+    ecb_bottom = 0.0f;
+	ecb_top = 1.5f;
+	ecb_mid = 0.75f;
+	ecb_left = 0.5f;	  
+	ecb_right = 0.5f;
+
+
     visible = true;
-    //if these are changed to lists, the player constructor will add its pointer to the lists upon creation, and remove it upon deletion
 	in_camera_view = true;
 	use_entity_colission = true; 
 	use_stage_colission = true;
+
+
 };
 void mbl::Player::rollBackState(/* some pointer to a state*/){
 
 };
-
+/*
 void mbl::Player::DEBUG_renderCollision(SDL_Renderer * ctx){
-    LOG("Entity position: (") LOG(position.x) LOG(", ") LOG(position.y) LOG(")\n")
+    //LOG("Entity position: (") LOG(position.x) LOG(", ") LOG(position.y) LOG(")\n")
+
+    // draw base position crosshair
+    float crosshair_size = 0.1f; //half of the crosshair size in world space units
+    mbl::Color cc = mbl::light_blue;
+    
+    SDL_SetRenderDrawColor( ctx, cc.r, cc.g, cc.b, 0xff );
+    SDL_RenderDrawLine( ctx,
+        worldToCameraX(position.x - crosshair_size),
+        worldToCameraX(position.y),
+        worldToCameraY(position.x + crosshair_size),
+        worldToCameraY(position.y)
+    );
+    SDL_RenderDrawLine( ctx,
+        worldToCameraX(position.x),
+        worldToCameraX(position.y - crosshair_size),
+        worldToCameraY(position.x),
+        worldToCameraY(position.y + crosshair_size)
+    );
+    
 }
+*/
 void mbl::Player::computeNextState(){
 
-};
-
-mbl::EntityRenderInfo mbl::Player::getRenderInfo(){
-    mbl::EntityRenderInfo info;
-    
-    return info;
 };

@@ -100,40 +100,43 @@ struct ModelData
 	//not quite but kinda
 };
 
-struct EntityRenderInfo
-{
-	glm::vec2 *world_position = NULL;      // faster to copy one pointer than to copy 2 floats?
-	int action_state_frame_count; 	// animation frame number
-	int action_state;  				// animation id, cast from enum
-	Color *overlay = NULL;		// pointer to overlay color 
-	ModelData *model_data = NULL;
-
-	// renderer will be able to render the model data based on position, action state, and frame count
-};
-
 class Entity // abstract class for entitys in a Morbula scene
 {
 public:
 	virtual void computeNextState(){};
 	virtual void rollBackState(/* some pointer to a state*/){};
-	virtual EntityRenderInfo getRenderInfo(){}; 
-	virtual void DEBUG_renderCollision(SDL_Renderer *){};
+	void DEBUG_draw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
+	// have a debug draw for ecb, camera, ect...
 	//virtual void entityCollide(){};
 	//virtual void stageCollide(){}; 
 	
 	//virtual ModelData *loadModel(); //might not go here
 protected:
-	Color overlay;
-	bool visible;
-	glm::vec2 position;
-	float camera_box_height;
-	float camera_box_width;
+	//render & phisical info
+	glm::vec2 world_pos;      // world position
+	int action_state_frame_count = 0; 	// animation frame number
+	int action_state;  				// animation id, cast from enum
+	glm::vec2 bounding_box_tl;	//camera box top left coordinate, relative to world_pos
+	glm::vec2 bounding_box_br;	//camera box bottom right coordinate, relative to world_pos
 
-	//ehh? for now Ill use these but I may keep lists of pointers to entities to keep track of which  
+	//render info
+	Color overlay;
+	ModelData *model_data = NULL;
+	bool visible;
+
+	//phisical info
+	float ecb_bottom; // y-axis world distance between bottom of ecb diamond and base position
+	float ecb_top;    // y-axis world distance between top of ecb diamond and base position
+	float ecb_mid;	  // y-axis world distance between middle of ecb diamond and base position
+	float ecb_left;	  // x-axis
+	float ecb_right;
+
+	//classification info? for now Ill use these but I may keep lists of pointers to entities to keep track of which use what collisions
+	//if these are changed to lists, the Entity constructor(?) will add its pointer to the lists upon creation, and remove it upon deletion
 	bool in_camera_view;
 	bool use_entity_colission; 
 	bool use_stage_colission;
-	//implementations of this class will define their own entity states
+
 };
 
 
@@ -190,8 +193,6 @@ public:
 	Player(CharacterAttribute* /* pointer to inputter */);
 	void computeNextState();
 	void rollBackState(/* some pointer to a state*/);
-	EntityRenderInfo getRenderInfo(); 
-	void DEBUG_renderCollision(SDL_Renderer *);
 
 	// ! REMOVE SELF FROM camera_entity_list UPON DISTRUCTION !
 private:
@@ -199,10 +200,9 @@ private:
 	glm::vec2 velocity;
 
 	int cur_health;
-	Direction direction; //left or right
-	bool grounded; //might just derive this from action state idk
-	bool used_dashed = false; //has player used air dash?
-	bool fast_falled = false; //has player used fast fall?
+	Direction direction;
+	bool used_dashed = false; // has player used air dash?
+	bool fast_falled = false; // has player used fast fall?
 
 
 	CharacterAttribute *attributes; //do not mutate
@@ -246,11 +246,11 @@ private:
 	float scale_max;
 	float scale_min;
 	std::vector<mbl::Entity*> camera_entity_list; //list of entity pointers that the camera must include
-	int worldToCameraX(float x);
-	int worldToCameraY(float y);
+	int worldToCameraX(float x); //depreciated
+	int worldToCameraY(float y); //depreciated
+	//void SDL_DrawLineFromWorldCoord( SDL_Renderer*, float, float, float, float); //converts world coordinates to screen and renders line to context
 	
-
-
+	static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);
 
 	//prob wont have these
 	//PlayerState players[1]; //up to 4 players. maybe should be pointer cus of ggpo?
