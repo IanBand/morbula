@@ -14,8 +14,8 @@ struct CharacterAttribute
 	
 
 	float gravity;
-	float init_height; //world space units
-	float init_width;  //world space units
+	float base_ecb_height; //world space units
+	float base_ecb_width;  //world space units
 	float rigidity; //landing/impact squash multiplier, wavedash squash/contortion
 	float mass;
 	int init_health;
@@ -99,9 +99,9 @@ struct CharacterAttribute
 
 inline CharacterAttribute test_char_attr {
 	"test_char_0",
-	1.0f, //gravity
-	1.0f, //init_height
-	1.0f  //init_width
+	0.02f, //gravity
+	0.7f, // base_ecb_height
+	0.4f, //base_ecb_width
 };
 }
 #endif

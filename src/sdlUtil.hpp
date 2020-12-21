@@ -9,7 +9,6 @@
 //idk bout these ones, might go in main idk idk
 #include <stdio.h> 
 #include <string>
-#include <cmath> //gross lol
 
 
 //make this into an SLDManager class

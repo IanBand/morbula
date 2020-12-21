@@ -81,6 +81,9 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
 
     //DEBUG render stage collision
     for(mbl::Surface surface : stage_collision->surfaces){
+        //the direction of a surface is important.
+        //each surface can be thought of as an arrow starting from v1
+        //in the direction of v2
 
         mbl::Color sc = mbl::SurfaceColors[surface.surface_type];
         SDL_SetRenderDrawColor( ctx, sc.r, sc.g, sc.b, 0xff );
@@ -90,7 +93,20 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
             worldToCameraX(stage_collision->vertices[surface.v2].x),
             worldToCameraY(stage_collision->vertices[surface.v2].y)
         );
+
+        float surface_theta = 
+        std::acos(
+            glm::dot(
+                glm::vec2(1.0f,0.0f), 
+                stage_collision->vertices[surface.v2] - stage_collision->vertices[surface.v1]
+            )
+            /
+            glm::length(stage_collision->vertices[surface.v2] - stage_collision->vertices[surface.v1])
+        ); 
+        LOG(surface_theta) LOG("\n")
+
     }
+    LOG("\n=-=-=-=-=-=-=-=-=\n");
 
     //DEBUG render entity collision
     mbl::Color cc = mbl::light_blue;
@@ -192,20 +208,24 @@ void mbl::Entity::DEBUG_draw(SDL_Renderer* ctx, glm::vec2* camera_pos, float sca
 *******************************************************/
 mbl::Player::Player( CharacterAttribute *_attributes /* pointer to inputter */){
     
-    attributes = _attributes;
-    //all Entities have these aspects
-    world_position = glm::vec2(0.0f, 1.0f); // TEMP INIT POSITION
-    bounding_box_size = glm::vec2(0.4f, 0.4f);
-	bounding_box_offset = glm::vec2(0.0f, 0.0f);
+    attributes = _attributes; //must be renamed to player attributes
+    // these go in entity constructor
+    world_position = glm::vec2(0.0f, 1.0f); //temp assignment, must be read from scene
+    velocity = glm::vec2(0.0f, 0.0f); //init to (0,0)
+    bounding_box_offset = glm::vec2(0.0f, 0.0f); //always init to (0,0)
+
+
+    bounding_box_size = glm::vec2(0.4f, 0.4f); // read from entity attr
+	
     
     overlay = {0xff,0xff,0xff,0x00};
 
 
+    //init ecb
     ecb_bottom = 0.0f;
-	ecb_top = 1.5f;
-	ecb_mid = 0.75f;
-	ecb_left = 0.5f;	  
-	ecb_right = 0.5f;
+	ecb_top = attributes->base_ecb_height;
+	ecb_mid = attributes->base_ecb_height * 0.5;
+	ecb_left = (ecb_right = attributes->base_ecb_width * 0.5);
 
 
     visible = true;

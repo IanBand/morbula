@@ -31,6 +31,7 @@ Made referencing the [Lazy Foo SDL tutorial](https://lazyfoo.net/tutorials/SDL/i
 
 * co-op camera: two local players have a split screen, each with their own camera tracking them. If they come within range of eachother in world space, their cameras move towards where they would turn into one camera. Add hysteresis so the camera can more easily stay locked as a single wide camera.
 * Different character ECBs are different sizes in melee. It looks like they actually dont collide with eachother eather, characters just exert a force (I will make this proportional to their mass) on eachother when their ECBs overlap
+* [What the heck are '&' symbols doing in function parameter lists?](https://stackoverflow.com/questions/5816719/difference-between-function-arguments-declared-with-and-in-c)
 
 
 ## Build It

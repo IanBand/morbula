@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <glm/vec2.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 //todo: define scene struct
 
@@ -44,11 +45,8 @@ inline const Color SurfaceColors[] = {
 };
 struct Surface
 {
-    int v1;
-    int v2;
-    SurfaceType surface_type;
 
-    //add other surface attribute flags here 
+	//add other surface attribute flags... 
     // bool left_ledge;
     // bool right_ledge;
     // bool no_tech;
@@ -58,6 +56,16 @@ struct Surface
 	// int crumble_timer; // 0 means no ccrumble
     // function pointer to an event
     // warp id
+
+    int v1; //index of vertex 1
+    int v2; //index of vertex 2
+	
+	// these tell grounded entities how to traverse* the stage when traveling over a surface boundary
+	// *literally traversing the stage data structure to the appropriate surface
+	int v1_connection; //index of surface connected via v1
+    int v2_Connection; //index of surface connected via v2
+
+	SurfaceType surface_type;
 };
 
 struct StageCollision{ //struct only details collision for now. this should be a whole ass stage struct.
@@ -70,6 +78,7 @@ struct StageCollision{ //struct only details collision for now. this should be a
     float height;
     float width;
     int id; //change to stage list enum?
+	//pointer to stage graphics or something idk
 };
 
 inline StageCollision test_stage_collision {
@@ -80,10 +89,10 @@ inline StageCollision test_stage_collision {
         {-1.0f,1.0f},
 	},
 	{    
-		{0,1,ceiling},
-        {1,2,right_wall},
-        {2,3,ground},
-        {3,0,left_wall}
+		{0,1, 3,1, ceiling},
+        {1,2, 0,2, right_wall},
+        {2,3, 1,3, ground},
+        {3,0, 2,0, left_wall}
 	},
     100.0f,
     100.0f,
@@ -192,6 +201,9 @@ class Player: public Entity
 {
 public:
 	Player(CharacterAttribute* /* pointer to inputter */);
+
+	// Player(EntityAttribute*, CharacterAttribute*  /* pointer to inputter */)
+	// : Entity(EntityAttribute* );
 	void computeNextState();
 	void rollBackState(/* some pointer to a state*/);
 
