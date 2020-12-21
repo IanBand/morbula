@@ -41,7 +41,7 @@ Makefile coming soon!
 g++ -w ./lib/gca-plus/*.cpp -lusb-1.0 ./src/*.cpp -IC:\msys64\mingw32\include\SDL2 -LC:\msys64\mingw32\lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -std=c++17 -o ./bin/game -Ddblogs
 ```
 
-* warnings: ```-Wall``` for all warnings or ```-w ``` to supress all warnings. other warning types exist to give you some granual control over which warnings you want, such warnings can be found can be found [here](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md)
+* warnings: ```-Wall``` for all warnings or ```-w``` to supress all warnings. other warning types exist to give you some granual control over which warnings you want, such warnings can be found can be found [here](https://github.com/lefticus/cppbestpractices/blob/master/02-Use_the_Tools_Available.md)
 * add ``` -Wl,-subsystem,windows ``` option to detach from console at startup
 * add ``` -Ddblogs ``` option to build with debug logs enabled, they wont be printed if the above option is also used
 * you may have to replace ```-IC:\msys64\mingw32\include\SDL2``` and ```-LC:\msys64\mingw32\lib``` with your own install directories if you chose something other than the default install locations
