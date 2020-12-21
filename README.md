@@ -10,11 +10,11 @@ Made referencing the [Lazy Foo SDL tutorial](https://lazyfoo.net/tutorials/SDL/i
 
 ## Code Improvements
 - Create a makefile (!)
-- only compiles with -w (supresses all warnings)
+- Currently only compiles with -w (supresses all warnings)
 - Use namespaces in some more places
 - Probably many misspellings of "collision"
-- use smart pointers or get a memory leak checker to work https://stackoverflow.com/questions/17855662/memory-check-library-for-mingw  http://wyw.dcweb.cn/leakage.htm
-- https://github.com/lefticus/cppbestpractices/blob/master/00-Table_of_Contents.md
+- Use smart pointers or get a memory leak checker to work https://stackoverflow.com/questions/17855662/memory-check-library-for-mingw  http://wyw.dcweb.cn/leakage.htm
+- Never hurts to implement some [c++ best practices](https://github.com/lefticus/cppbestpractices/blob/master/00-Table_of_Contents.md), but focus more on just getting things done for now
 
 ## Toolchain
 - [MinGW via MSYS2](https://www.msys2.org/) 
