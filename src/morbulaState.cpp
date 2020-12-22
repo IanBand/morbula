@@ -76,9 +76,6 @@ void mbl::GameState::calcCameraPosition(){
     //compute scale from the box
 };
 void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ ){
-
-
-
     //DEBUG render stage collision
     for(mbl::Surface surface : stage_collision->surfaces){
         //the direction of a surface is important.
@@ -94,6 +91,7 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
             worldToCameraY(stage_collision->vertices[surface.v2].y)
         );
 
+        /*
         float surface_theta = 
         std::acos(
             glm::dot(
@@ -104,43 +102,38 @@ void mbl::GameState::renderStateToSDL( SDL_Renderer* ctx /*pointer to render set
             glm::length(stage_collision->vertices[surface.v2] - stage_collision->vertices[surface.v1])
         ); 
         LOG(surface_theta) LOG("\n")
+        */
 
     }
-    LOG("\n=-=-=-=-=-=-=-=-=\n");
+    //LOG("\n=-=-=-=-=-=-=-=-=\n");
 
     //DEBUG render entity collision
-    mbl::Color cc = mbl::light_blue;
-    SDL_SetRenderDrawColor( ctx, cc.r, cc.g, cc.b, 0xff );
+    mbl::Color ecbColor = mbl::orange_gold;
+    mbl::Color BBColor  = mbl::light_blue;
+    mbl::Color cxhColor = mbl::red;
+    
 
     for(const mbl::Entity *entity : entities ){
-        //entity->getRenderInfo();//DEBUG_renderCollision( ctx );
-        entity->DEBUG_draw(ctx, &camera_position, scale, mbl::GameState::SDL_DrawLineFromWorldCoord);
-            
+        SDL_SetRenderDrawColor( ctx, ecbColor.r, ecbColor.g, ecbColor.b, 0xff );
+        entity->DEBUG_ecbDraw         (ctx, &camera_position, scale, mbl::GameState::SDL_DrawLineFromWorldCoord);
+
+        SDL_SetRenderDrawColor( ctx, BBColor.r,  BBColor.g,  BBColor.b,  0xff );
+        entity->DEBUG_BBDraw          (ctx, &camera_position, scale, mbl::GameState::SDL_DrawLineFromWorldCoord);
+        
+        SDL_SetRenderDrawColor( ctx, cxhColor.r, cxhColor.g, cxhColor.b, 0xff );
+        entity->DEBUG_posCrossHairDraw(ctx, &camera_position, scale, mbl::GameState::SDL_DrawLineFromWorldCoord);
     }
 };
 
 /*******************************************************
 * Entity                                               *
 *******************************************************/
-void mbl::Entity::DEBUG_draw(SDL_Renderer* ctx, glm::vec2* camera_pos, float scale, void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const{
-    
-    
-    //draw world_position crosshairs
-    float crosshair_size = 0.1f;
-    drawLine(ctx, camera_pos, scale, 
-        world_position.x - crosshair_size,
-        world_position.y,
-        world_position.x + crosshair_size,
-        world_position.y
-    );
-    drawLine(ctx, camera_pos, scale, 
-        world_position.x,
-        world_position.y - crosshair_size,
-        world_position.x,
-        world_position.y + crosshair_size
-    );
-
-
+void mbl::Entity::DEBUG_ecbDraw(
+    SDL_Renderer* ctx, 
+    glm::vec2* camera_pos, 
+    float scale, 
+    void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float)
+)const{
     //draw ecb diamond
     drawLine(ctx, camera_pos, scale, 
         world_position.x,
@@ -166,9 +159,14 @@ void mbl::Entity::DEBUG_draw(SDL_Renderer* ctx, glm::vec2* camera_pos, float sca
         world_position.x,
         world_position.y + ecb_bottom
     );
+};
 
-
-
+void mbl::Entity::DEBUG_BBDraw(
+    SDL_Renderer* ctx, 
+    glm::vec2* camera_pos, 
+    float scale, 
+    void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float)
+)const{
     //draw bounding box / camera box
     //bounding_box_size - dimensions of bounding box
 	//bounding_box_offset - offset of center of bounding box from base position
@@ -197,10 +195,27 @@ void mbl::Entity::DEBUG_draw(SDL_Renderer* ctx, glm::vec2* camera_pos, float sca
         world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
         world_position.y + bounding_box_offset.y + bounding_box_size.y
     );
-    
-
-
-
+};
+void mbl::Entity::DEBUG_posCrossHairDraw(
+    SDL_Renderer* ctx, 
+    glm::vec2* camera_pos, 
+    float scale, 
+    void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float)
+)const{
+    //draw world_position crosshairs
+    float crosshair_size = 0.1f;
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x - crosshair_size,
+        world_position.y,
+        world_position.x + crosshair_size,
+        world_position.y
+    );
+    drawLine(ctx, camera_pos, scale, 
+        world_position.x,
+        world_position.y - crosshair_size,
+        world_position.x,
+        world_position.y + crosshair_size
+    );
 };
 
 /*******************************************************

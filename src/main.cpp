@@ -12,8 +12,6 @@ int main( int argc, char *argv[] )
 	LOG("*** This is a development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
 	LOG("\n*** Check https://github.com/IanBand/morbula for the latest development push!\n\n")
 
-
-	
 	//game state
 	mbl::GameState game_state;
 
