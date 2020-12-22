@@ -109,8 +109,8 @@ class Entity // abstract class for entitys in a Morbula scene
 {
 public:
     Entity(glm::vec2,glm::vec2,float,float,int);
-	virtual void computeNextState(){};
-	virtual void rollBackState(/* some pointer to a state*/){};
+	virtual void computeNextState() = 0;
+	virtual void rollBackState(/* some pointer to a state*/) = 0;
 	void DEBUG_ecbDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_BBDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_posCrossHairDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;

@@ -13,6 +13,8 @@ mbl::Entity::Entity(
     base_ecb_height   = _base_ecb_height;
     base_ecb_width    = _base_ecb_width;
 
+    bounding_box_offset = glm::vec2(0.0f, 0.0f); //always init to (0,0)
+
     //init ecb
     ecb_bottom = 0.0f;
 	ecb_top    = base_ecb_height;
@@ -24,6 +26,14 @@ mbl::Entity::Entity(
 	use_entity_colission = true; 
 	use_stage_colission  = true;
 };
+/*
+void mbl::Entity::computeNextState(){
+    ++action_state_frame_count;
+};
+void mbl::Entity::rollBackState(/* some pointer to a state){
+    //set action_state_frame_count to whatever the rollback says it should be
+};
+*/
 void mbl::Entity::DEBUG_ecbDraw(
     SDL_Renderer* ctx, 
     glm::vec2* camera_pos, 
@@ -113,3 +123,4 @@ void mbl::Entity::DEBUG_posCrossHairDraw(
         world_position.y + crosshair_size
     );
 };
+

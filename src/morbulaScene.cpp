@@ -17,8 +17,8 @@ mbl::Scene::Scene(){
     // Scene owns all entity pointers
     entities.push_back(new mbl::Player( 
         &mbl::test_char_attr, /*pointer to inputter*/
-        glm::vec2(0.5f,1.5f),
-        glm::vec2(2.0f,2.0f),
+        glm::vec2(0.5f,1.0f),
+        glm::vec2(0.75f,0.75f),
         0.5f,
         0.7f,
         -1
@@ -27,7 +27,6 @@ mbl::Scene::Scene(){
     stage = &mbl::test_stage; //crashes without this, need to put stage in another data structure
 
     camera_position = glm::vec2(0.0f,0.2f); //world space coordinate that the camear is pointing at, set to scene init camera?
-    scale = 0.25;
     scene_frame_number = 0;
     rngr = 0; //seed the rng;
 
@@ -73,8 +72,18 @@ void mbl::Scene::SDL_DrawLineFromWorldCoord( SDL_Renderer* ctx, glm::vec2* camer
 };
 void mbl::Scene::advanceGameState(){
     ++scene_frame_number;
-    scale = 0.15;
-    scale = std::sin(scene_frame_number * 0.025) * 0.01 + 0.15; 
+
+    //temp camera zoom demo
+    float base_scale = 0.1f;
+    scale = base_scale + std::sin(scene_frame_number * 0.025) * 0.01; 
+
+    //calc next state of each entity... at this point Im convinced I have to split this up into the different arrays for different child classes of entity
+    //so that their unique computeNextState() functions can be called
+    for(mbl::Entity *entity : entities ){
+        entity->computeNextState();
+    }
+
+
 };
 void mbl::Scene::calcCameraPosition(){
     //loop through entities in camera_entity_list
@@ -120,7 +129,7 @@ void mbl::Scene::renderStateToSDL( SDL_Renderer* ctx /*pointer to render setting
     mbl::Color cxhColor = mbl::red;
     
 
-    for(const mbl::Entity *entity : entities ){
+    for(mbl::Entity *entity : entities ){
         SDL_SetRenderDrawColor( ctx, ecbColor.r, ecbColor.g, ecbColor.b, 0xff );
         entity->DEBUG_ecbDraw         (ctx, &camera_position, scale, mbl::Scene::SDL_DrawLineFromWorldCoord);
 
