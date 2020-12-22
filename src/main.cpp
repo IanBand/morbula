@@ -1,6 +1,6 @@
 #include "sdlUtil.hpp"
 #include "../lib/gca-plus/GCAdapter.h"
-#include "morbulaState.hpp"
+#include "morbula.hpp"
 #include "debugLogger.hpp"
 
 
@@ -13,7 +13,7 @@ int main( int argc, char *argv[] )
 	LOG("\n*** Check https://github.com/IanBand/morbula for the latest development push!\n\n")
 
 	//game state
-	mbl::GameState game_state;
+	mbl::Scene morbula_scene;
 
 	//menu state
 	//input manager
@@ -66,7 +66,7 @@ int main( int argc, char *argv[] )
 				// Get player input
 
 				// Compute next game state
-				game_state.advanceGameState();
+				morbula_scene.advanceGameState();
 
 				// Compute next menu state
 				
@@ -75,7 +75,7 @@ int main( int argc, char *argv[] )
 				SDL_RenderClear( gRenderer );
 
 				// Draw game state
-				game_state.renderStateToSDL( gRenderer );
+				morbula_scene.renderStateToSDL( gRenderer );
 
 				// Draw menu state
 

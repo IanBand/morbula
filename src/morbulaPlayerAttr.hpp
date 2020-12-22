@@ -1,8 +1,8 @@
-#ifndef CHAR_ATTR_HPP
-#define CHAR_ATTR_HPP
+#ifndef PLAYER_ATTR_HPP
+#define PLAYER_ATTR_HPP
 
 namespace mbl {
-struct CharacterAttribute
+struct PlayerAttribute
 {
 	// character attributes
 
@@ -14,8 +14,6 @@ struct CharacterAttribute
 	
 
 	float gravity;
-	float base_ecb_height; //world space units
-	float base_ecb_width;  //world space units
 	float rigidity; //landing/impact squash multiplier, wavedash squash/contortion
 	float mass;
 	int init_health;
@@ -97,7 +95,7 @@ struct CharacterAttribute
 	//you would in theory put stats for all common animations and mechanics here.
 };
 
-inline CharacterAttribute test_char_attr {
+inline PlayerAttribute test_char_attr {
 	"test_char_0",
 	0.02f, //gravity
 	0.7f, // base_ecb_height

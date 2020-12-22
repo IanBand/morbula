@@ -1,9 +1,9 @@
-#ifndef GAME_STATE_HPP
-#define GAME_STATE_HPP
+#ifndef MORBULA_HPP
+#define MORBULA_HPP
 #include "sdlUtil.hpp" //only needed for SDL_Renderer
-#include "morbulaCharAttr.hpp"
+#include "morbulaPlayerAttr.hpp"
 #include <vector>
-#include <memory>
+//#include <memory>
 #include <glm/vec2.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
@@ -68,20 +68,17 @@ struct Surface
 	SurfaceType surface_type;
 };
 
-struct StageCollision{ //struct only details collision for now. this should be a whole ass stage struct.
+struct Stage{ //struct details stage collision and points to graphical stage data.
 	//include camera bounds, liquid areas + positions
-    //a point forms a surface with itself and the next point in the points array
-    //the Nth surface is defined by the Nth and (N+1)th points in the points array, and the Nth element in the surfaces array
 
 	std::vector<glm::vec2> vertices; 
     std::vector<Surface> surfaces;
     float height;
     float width;
-    int id; //change to stage list enum?
 	//pointer to stage graphics or something idk
 };
 
-inline StageCollision test_stage_collision {
+inline Stage test_stage {
 	{
         {-1.0f,-1.0f},
         {1.0f,-1.0f},
@@ -95,8 +92,7 @@ inline StageCollision test_stage_collision {
         {3,0, 2,0, left_wall}
 	},
     100.0f,
-    100.0f,
-    0
+    100.0f
 };
 
 /*******************************************************
@@ -112,6 +108,7 @@ struct ModelData
 class Entity // abstract class for entitys in a Morbula scene
 {
 public:
+    Entity(glm::vec2,glm::vec2,float,float,int);
 	virtual void computeNextState(){};
 	virtual void rollBackState(/* some pointer to a state*/){};
 	void DEBUG_ecbDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
@@ -137,6 +134,9 @@ protected:
 	bool visible;
 
 	//phisical info
+    float base_ecb_height;
+    float base_ecb_width;
+
 	float ecb_bottom; // y-axis world distance between bottom of ecb diamond and base position
 	float ecb_top;    // y-axis world distance between top of ecb diamond and base position
 	float ecb_mid;	  // y-axis world distance between middle of ecb diamond and base position
@@ -148,6 +148,8 @@ protected:
 	bool in_camera_view;
 	bool use_entity_colission; 
 	bool use_stage_colission;
+
+
 
 };
 
@@ -185,11 +187,6 @@ struct EquipmentState
 	//beam type
 	bool cascade_beam; //absorption energy particals damage other enenimies when they pass over them, and generate more particles
 };
-
-//struct PlayerState{}; might keep this around for barebones player state for ggpo
-
-
-
 struct EnergyState
 {
     glm::vec2 position;
@@ -202,14 +199,14 @@ struct EnergyState
 class Player: public Entity
 {
 public:
-	Player(CharacterAttribute* /* pointer to inputter */);
+	Player(PlayerAttribute*,glm::vec2,glm::vec2,float,float,int);  /* pointer to inputter */
 
 	// Player(EntityAttribute*, CharacterAttribute*  /* pointer to inputter */)
 	// : Entity(EntityAttribute* );
 	void computeNextState();
 	void rollBackState(/* some pointer to a state*/);
 
-	// ! REMOVE SELF FROM camera_entity_list UPON DISTRUCTION !
+	// ! REMOVE SELF FROM camera_entity_list UPON DISTRUCTION ?!
 private:
 	glm::vec2 prev_positions[5]; //keep track of previous positions for trailing effects & colission. dont shift array, just shift current index and have the prev frame indices increase mod 5
 	glm::vec2 velocity;
@@ -219,42 +216,41 @@ private:
 	bool used_dashed = false; // has player used air dash?
 	bool fast_falled = false; // has player used fast fall?
 
-
-	CharacterAttribute *attributes; //do not mutate
+	PlayerAttribute *attributes; //do not mutate
 	EquipmentState equipment_state;
 	PlayerActionState action_state; 
 	PlayerActionState prev_action_state; 
 	int action_state_frame_count = 0; //how many frames has the player been in the current action state
-	
-
 };
+
+
 /*******************************************************
-* Scene Structures                                     *
+* Scene                                                *
 *******************************************************/
-class GameState
+/*
+* Manages loading entities, preforming colision decetction between entities, scene camera, and scene terrain
+*/
+class Scene
 {
 public:
-	GameState();
-	~GameState();
+	Scene();
+	~Scene();
 	void advanceGameState();
-	void rollBackGameState(/*some state pointer*/);
+	void rollBackState(/*some state pointer*/);
 	void loadScene();
 	void renderStateToSDL(SDL_Renderer * /*pointer to render settings*/);
 
 	
 
 private:
-
-	//this memory makes up the scene
 	std::vector<mbl::Entity*> entities; //should there be a collidable entities list? or just skip entities that aren't collidable
-	StageCollision *stage_collision; //may change, might need to store stage id?
+	Stage *stage;
 	unsigned int scene_frame_number;
-	uint32_t rngr; //register for rng, never directly read this
-	uint16_t rng(); //call this function when you want a random number for the game state
+	uint32_t rngr; //register for rng, never directly read this, just make this global...
+	uint16_t rng();
 
-
-	//camera stuff
-	//make camera its own class?
+    static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);
+	//camera stuff, make into own class?
 	void calcCameraPosition(); // calculate the camera world position and scale based on entities with camera flags
 	glm::vec2 camera_position;
 	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
@@ -263,16 +259,12 @@ private:
 	std::vector<mbl::Entity*> camera_entity_list; //list of entity pointers that the camera must include
 	int worldToCameraX(float x); //depreciated?
 	int worldToCameraY(float y); //depreciated?
-	//void SDL_DrawLineFromWorldCoord( SDL_Renderer*, float, float, float, float); //converts world coordinates to screen and renders line to context
-	
-	static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);
 
 	//prob wont have these
 	//PlayerState players[1]; //up to 4 players. maybe should be pointer cus of ggpo?
     //EnergyState energys[16]; //up to 4 energies active per player?
 	//Item items[10]
 	//Enemy enimies[10]
-
 };
 }
 
