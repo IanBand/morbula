@@ -34,6 +34,15 @@ void mbl::Entity::rollBackState(/* some pointer to a state){
     //set action_state_frame_count to whatever the rollback says it should be
 };
 */
+mbl::BoundingBox mbl::Entity::boundingBox(){
+    //returns world coordinate bounding box for entity
+    return {//bounding_box_size + bounding_box_offset
+        {world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
+         world_position.y + bounding_box_offset.y + bounding_box_size.y},
+        {world_position.x + bounding_box_offset.x - bounding_box_size.x * 0.5,
+         world_position.y + bounding_box_offset.y /* + 0 */ }
+    };
+};
 void mbl::Entity::DEBUG_ecbDraw(
     SDL_Renderer* ctx, 
     glm::vec2* camera_pos, 

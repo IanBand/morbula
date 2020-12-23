@@ -104,7 +104,10 @@ struct ModelData
 	//animarions are just a list of images
 	//not quite but kinda
 };
-
+struct BoundingBox{
+	glm::vec2 p1;
+	glm::vec2 p2;
+};
 class Entity // abstract class for entitys in a Morbula scene
 {
 public:
@@ -114,6 +117,7 @@ public:
 	void DEBUG_ecbDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_BBDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_posCrossHairDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
+	mbl::BoundingBox boundingBox();
 	//glm::vec2 ecb_right(){return glm::vec2(0.0f,0.0f)}; // should these be in world space or entity space???
 	// have a debug draw for ecb, camera, ect...
 	//virtual void entityCollide(){};
@@ -127,6 +131,7 @@ protected:
 	int action_state;  				// animation id, cast from enum
 	glm::vec2 bounding_box_size;	//dimensions of bounding box
 	glm::vec2 bounding_box_offset;	//offset of center of bounding box from base position
+
 
 	//render info
 	Color overlay;

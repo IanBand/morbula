@@ -15,14 +15,18 @@ mbl::Scene::Scene(){
 
     //init test data
     // Scene owns all entity pointers
-    entities.push_back(new mbl::Player( 
+
+    mbl::Player *test_p1 = new mbl::Player( 
         &mbl::test_char_attr, /*pointer to inputter*/
         glm::vec2(0.5f,1.0f),
         glm::vec2(0.75f,0.75f),
         0.5f,
         0.7f,
         -1
-    ));
+    );
+
+    entities.push_back(test_p1);
+    camera_entity_list.push_back(test_p1);//test_p1 is now tracked by the camera
 
     stage = &mbl::test_stage; //crashes without this, need to put stage in another data structure
 

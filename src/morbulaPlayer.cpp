@@ -24,5 +24,4 @@ void mbl::Player::rollBackState(/* some pointer to a state*/){
     
 };
 void mbl::Player::computeNextState(){
-    LOG("fuckyou\n")
 };
