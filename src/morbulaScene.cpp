@@ -17,20 +17,25 @@ mbl::Scene::Scene(){
     // Scene owns all entity pointers
 
     mbl::Player *test_p1 = new mbl::Player( 
-        &mbl::test_char_attr, /*pointer to inputter*/
-        glm::vec2(0.5f,1.0f),
-        glm::vec2(0.75f,0.75f),
-        0.5f,
-        0.7f,
-        -1
+        &mbl::test_char_attr1,
+        &mbl::entity_init1,
+        &mbl::test_entity_attr1
+    );
+
+    mbl::Player *test_p2 = new mbl::Player( 
+        &mbl::test_char_attr2,
+        &mbl::entity_init2,
+        &mbl::test_entity_attr2
     );
 
     entities.push_back(test_p1);
     camera_entity_list.push_back(test_p1);//test_p1 is now tracked by the camera
+    entities.push_back(test_p2);
+    camera_entity_list.push_back(test_p2);//test_p1 is now tracked by the camera
 
-    stage = &mbl::test_stage; //crashes without this, need to put stage in another data structure
+    stage = &mbl::test_stage; //prog crashes without this
 
-    camera_position = glm::vec2(0.0f,0.2f); //world space coordinate that the camear is pointing at, set to scene init camera?
+    camera_position = glm::vec2(0.0f,0.2f); //init camera position will be defined in scene data structure
     scene_frame_number = 0;
     rngr = 0; //seed the rng;
 

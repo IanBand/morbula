@@ -1,30 +1,29 @@
 #include "morbula.hpp"
 #include "debugLogger.hpp"
+#include <cstring>
 
-mbl::Entity::Entity(
-    glm::vec2 init_position, 
-    glm::vec2 _bounding_box_size,
-    float _base_ecb_height,
-    float _base_ecb_width,
-    int init_surface = -1
-){
-    world_position    =  init_position, 
-    bounding_box_size = _bounding_box_size,
-    base_ecb_height   = _base_ecb_height;
-    base_ecb_width    = _base_ecb_width;
+mbl::Entity::Entity(EntityInit *init, EntityAttribute *_entity_attr){
 
+    // initialize attributes
+    world_position    = init->world_position;
+    surface_id        = init->surface_id;
+    surface_position  = init->surface_position;
+    visible           = init->visible;
+    overlay           = init->overlay; 
+
+    
+    // copy entity attributes
+    memcpy(&ea, _entity_attr, sizeof(mbl::EntityAttribute));
+    
+    // init bounding box
     bounding_box_offset = glm::vec2(0.0f, 0.0f); //always init to (0,0)
+    bounding_box_size = ea.init_bounding_box_size;
 
     //init ecb
     ecb_bottom = 0.0f;
-	ecb_top    = base_ecb_height;
-	ecb_mid    = base_ecb_height * 0.5;
-	ecb_left   = (ecb_right = base_ecb_width * 0.5);
-
-    visible              = true;
-	in_camera_view       = true;
-	use_entity_colission = true; 
-	use_stage_colission  = true;
+	ecb_top    = ea.base_ecb_height;
+	ecb_mid    = ea.base_ecb_height * 0.5;
+	ecb_left   = (ecb_right = ea.base_ecb_width * 0.5);
 };
 /*
 void mbl::Entity::computeNextState(){
@@ -85,6 +84,7 @@ void mbl::Entity::DEBUG_BBDraw(
     //draw bounding box / camera box
     //bounding_box_size - dimensions of bounding box
 	//bounding_box_offset - offset of center of bounding box from base position
+    // rewrite using lambdas and bounding box method
 
     drawLine(ctx, camera_pos, scale, 
         world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,

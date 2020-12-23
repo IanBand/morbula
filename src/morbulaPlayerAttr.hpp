@@ -95,11 +95,13 @@ struct PlayerAttribute
 	//you would in theory put stats for all common animations and mechanics here.
 };
 
-inline PlayerAttribute test_char_attr {
-	"test_char_0",
+inline PlayerAttribute test_char_attr1 {
+	"test_char_1",
 	0.02f, //gravity
-	0.7f, // base_ecb_height
-	0.4f, //base_ecb_width
+};
+inline PlayerAttribute test_char_attr2 {
+	"test_char_2",
+	0.026f, //gravity
 };
 }
 #endif

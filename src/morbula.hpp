@@ -2,14 +2,21 @@
 #define MORBULA_HPP
 #include "sdlUtil.hpp" //only needed for SDL_Renderer
 #include "morbulaPlayerAttr.hpp"
+#include "morbulaEntityAttr.hpp"
 #include <vector>
-//#include <memory>
 #include <glm/vec2.hpp>
 #include <glm/gtx/vector_angle.hpp>
+//#include <memory>
 
 //todo: define scene struct
 
 ;namespace mbl{
+
+struct BoundingBox{
+	glm::vec2 p1;
+	glm::vec2 p2;
+};
+
 /*******************************************************
 * Colors                                               *
 *******************************************************/
@@ -96,24 +103,43 @@ inline Stage test_stage {
 };
 
 /*******************************************************
-* Generic Model & Entity Data Structures	           *
+* Entity Inital Values                                 *
 *******************************************************/
-struct ModelData
-{
-	//2d model data will just be a list of animations
-	//animarions are just a list of images
-	//not quite but kinda
+//these values are meant to be changed by the entity implementation classes during gameplay
+struct EntityInit{
+	glm::vec2 world_position; // also reffered to as base position
+	int surface_id;
+	float surface_position;
+	bool visible;
+	mbl::Color overlay;
 };
-struct BoundingBox{
-	glm::vec2 p1;
-	glm::vec2 p2;
+
+inline EntityInit entity_init1 = {
+    {-1.0f,1.0f}, //glm::vec2 world_position; // also reffered to as base position
+    -1,          //int surface_id;
+    0.0f,        //float surface_position;
+    true,        //bool visible;
+    mbl::lime    //Color overlay;
 };
-class Entity // abstract class for entitys in a Morbula scene
+inline EntityInit entity_init2 = {
+    {1.0f,1.0f}, //glm::vec2 world_position; // also reffered to as base position
+    -1,          //int surface_id;
+    0.0f,        //float surface_position;
+    true,        //bool visible;
+    mbl::lime    //Color overlay;
+};
+
+/*******************************************************
+* Entity                                               *
+*******************************************************/
+// base class for an entity in a morbula scene
+class Entity
 {
 public:
-    Entity(glm::vec2,glm::vec2,float,float,int);
+    Entity(EntityInit *, EntityAttribute *);
 	virtual void computeNextState() = 0;
 	virtual void rollBackState(/* some pointer to a state*/) = 0;
+	//virtual void render() = 0; //might not even be virtual tbh
 	void DEBUG_ecbDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_BBDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_posCrossHairDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
@@ -125,36 +151,26 @@ public:
 	
 	//virtual ModelData *loadModel(); //might not go here
 protected:
-	//render & phisical info
 	glm::vec2 world_position; // also reffered to as base position
-	int action_state_frame_count = 0; 	// animation frame number
-	int action_state;  				// animation id, cast from enum
-	glm::vec2 bounding_box_size;	//dimensions of bounding box
-	glm::vec2 bounding_box_offset;	//offset of center of bounding box from base position
+	int surface_id;
+	float surface_position;
 
-
-	//render info
-	Color overlay;
-	ModelData *model_data = NULL;
+	// appearence
 	bool visible;
+	Color overlay;
 
-	//phisical info
-    float base_ecb_height;
-    float base_ecb_width;
+	//camera bounding box
+	glm::vec2 bounding_box_size;
+	glm::vec2 bounding_box_offset;
 
+	EntityAttribute ea; // don't mutate contents
+
+	// ecb state, coordinates relative to world_position
 	float ecb_bottom; // y-axis world distance between bottom of ecb diamond and base position
 	float ecb_top;    // y-axis world distance between top of ecb diamond and base position
 	float ecb_mid;	  // y-axis world distance between middle of ecb diamond and base position
 	float ecb_left;	  // x-axis
 	float ecb_right;
-
-	//classification info? for now Ill use these but I may keep lists of pointers to entities to keep track of which use what collisions
-	//if these are changed to lists, the Entity constructor(?) will add its pointer to the lists upon creation, and remove it upon deletion
-	bool in_camera_view;
-	bool use_entity_colission; 
-	bool use_stage_colission;
-
-
 
 };
 
@@ -204,10 +220,7 @@ struct EnergyState
 class Player: public Entity
 {
 public:
-	Player(PlayerAttribute*,glm::vec2,glm::vec2,float,float,int);  /* pointer to inputter */
-
-	// Player(EntityAttribute*, CharacterAttribute*  /* pointer to inputter */)
-	// : Entity(EntityAttribute* );
+	Player(PlayerAttribute* /*, pointer to inputter */ ,EntityInit *,EntityAttribute*);  
 	void computeNextState();
 	void rollBackState(/* some pointer to a state*/);
 
@@ -221,7 +234,8 @@ private:
 	bool used_dashed = false; // has player used air dash?
 	bool fast_falled = false; // has player used fast fall?
 
-	PlayerAttribute *attributes; //do not mutate
+	PlayerAttribute pa; // don't mutate contents
+
 	EquipmentState equipment_state;
 	PlayerActionState action_state; 
 	PlayerActionState prev_action_state; 
@@ -245,17 +259,15 @@ public:
 	void loadScene();
 	void renderStateToSDL(SDL_Renderer * /*pointer to render settings*/);
 
-	
-
 private:
+	static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);
 	std::vector<mbl::Entity*> entities; //should there be a collidable entities list? or just skip entities that aren't collidable
 	Stage *stage;
 	unsigned int scene_frame_number;
 	uint32_t rngr; //register for rng, never directly read this, just make this global...
 	uint16_t rng();
 
-    static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);
-	//camera stuff, make into own class?
+	//camera stuff (make into own class?)
 	void calcCameraPosition(); // calculate the camera world position and scale based on entities with camera flags
 	glm::vec2 camera_position;
 	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
