@@ -147,7 +147,8 @@ void mbl::Scene::calcCameraPosition(){
         camera_box.p2.y - camera_box.p1.y
     );
 
-    scale =  SCREEN_ASPEC_R / (cd.x > cd.y ? cd.x : cd.y);
+    // (SCREEN_ASPEC_R / (cd.x > cd.y ? cd.x : cd.y))
+    scale =  0.9f * (SCREEN_ASPEC_R / (cd.x > cd.y ? cd.x : cd.y)) + 0.1f * scale;
 
     LOG(scale) LOG("\n")
 };
