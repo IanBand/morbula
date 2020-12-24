@@ -132,9 +132,14 @@ void mbl::Scene::calcCameraPosition(){
     /*
     calculate camera position from camera bounding box:
     find mid point of camera box
+    camera position smoothing is done by taking a weighted running average of current pos and prev pos
+    
+    no average:
+        camera_position.x = (camera_box.p1.x + camera_box.p2.x) * 0.5f;
+        camera_position.y = (camera_box.p1.y + camera_box.p2.y) * 0.5f;
     */
-    camera_position.x = (camera_box.p1.x + camera_box.p2.x) * 0.5;
-    camera_position.y = (camera_box.p1.y + camera_box.p2.y) * 0.5;
+    camera_position.x = (camera_box.p1.x + camera_box.p2.x) * 0.25 + camera_position.x * 0.5f;
+    camera_position.y = (camera_box.p1.y + camera_box.p2.y) * 0.25 + camera_position.y * 0.5f;
 
     /*
     calculate scale from camera bounding box:
@@ -148,9 +153,8 @@ void mbl::Scene::calcCameraPosition(){
     );
 
     // (SCREEN_ASPEC_R / (cd.x > cd.y ? cd.x : cd.y))
-    scale =  0.9f * (SCREEN_ASPEC_R / (cd.x > cd.y ? cd.x : cd.y)) + 0.1f * scale;
-
-    LOG(scale) LOG("\n")
+    //camera zoom smoothing, weighted average of current zoom and prev zoom
+    scale =  0.5f * (SCREEN_ASPEC_R / (cd.x > cd.y ? cd.x : cd.y)) + 0.5f * scale;
 };
 void mbl::Scene::renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ ){
     //DEBUG render stage collision

@@ -10,7 +10,7 @@ mbl::Player::Player(
 :Entity(_entity_init, _entity_attr){
 
     memcpy(&pa, _player_attr, sizeof(mbl::PlayerAttribute));
-    velocity = glm::vec2(0.0f, 0.0f); //init to (0,0)
+    velocity = glm::vec2(0.03f, 0.1f); //init to (0,0)
     
 };
 void mbl::Player::rollBackState(/* some pointer to a state*/){
