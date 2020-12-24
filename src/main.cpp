@@ -20,6 +20,7 @@ int main( int argc, char *argv[] )
 
 
 	uint32_t prev_frame_ts;
+	uint32_t cur_ticks;
 
 	//Start up SDL and create window
 	if( !init() )
@@ -51,6 +52,12 @@ int main( int argc, char *argv[] )
 				while(SDL_GetTicks() - prev_frame_ts < SCREEN_TICK_PER_FRAME){
 					//do nothing	
 				}
+				
+				// log frame overhead
+				//cur_ticks = SDL_GetTicks();
+				//LOG("frame overhead: ") LOG(cur_ticks - prev_frame_ts); LOG("\n")
+				//prev_frame_ts = cur_ticks;
+				
 				prev_frame_ts = SDL_GetTicks();
 
 				//Handle events on queue
