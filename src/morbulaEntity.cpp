@@ -35,11 +35,16 @@ void mbl::Entity::rollBackState(/* some pointer to a state){
 */
 mbl::BoundingBox mbl::Entity::boundingBox(){
     //returns world coordinate bounding box for entity
-    return {//bounding_box_size + bounding_box_offset
-        {world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
-         world_position.y + bounding_box_offset.y + bounding_box_size.y},
+    /*
+        p1 and p2 should satisfy:
+        p1.x < p2.x
+        p1.y < p2.y
+    */
+    return {//bounding_box_size + bounding_box_offset        
         {world_position.x + bounding_box_offset.x - bounding_box_size.x * 0.5,
-         world_position.y + bounding_box_offset.y /* + 0 */ }
+         world_position.y + bounding_box_offset.y /* + 0 */ },
+        {world_position.x + bounding_box_offset.x + bounding_box_size.x * 0.5,
+         world_position.y + bounding_box_offset.y + bounding_box_size.y}
     };
 };
 void mbl::Entity::DEBUG_ecbDraw(

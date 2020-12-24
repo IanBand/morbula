@@ -83,8 +83,8 @@ void mbl::Scene::advanceGameState(){
     ++scene_frame_number;
 
     //temp camera zoom demo
-    float base_scale = 0.1f;
-    scale = base_scale + std::sin(scene_frame_number * 0.025) * 0.01; 
+    //float base_scale = 0.1f;
+    //scale = base_scale + std::sin(scene_frame_number * 0.025) * 0.01; 
 
     //calc next state of each entity... at this point Im convinced I have to split this up into the different arrays for different child classes of entity
     //so that their unique computeNextState() functions can be called
@@ -93,12 +93,63 @@ void mbl::Scene::advanceGameState(){
     }
 
 
+    calcCameraPosition();
+
+
 };
 void mbl::Scene::calcCameraPosition(){
     //loop through entities in camera_entity_list
     //keep track of min and max x and y coordinates of the bounding boxes of the entities to create a "camera bounding box." respect camera bounds during this
     //add margins to the master box
     //compute scale from the box
+
+    mbl::BoundingBox camera_box = camera_entity_list.at(0)->boundingBox();
+
+    for( mbl::Entity *entity : camera_entity_list ){
+
+        mbl::BoundingBox entity_box = entity->boundingBox();
+
+        // adjust camera box to include entity box
+        // todo: turn this into overloaded + operator for bounding box class
+        if(camera_box.p1.x > entity_box.p1.x)
+            camera_box.p1.x = entity_box.p1.x;
+
+        if(camera_box.p1.y > entity_box.p1.y)
+            camera_box.p1.y = entity_box.p1.y;
+
+        if(camera_box.p2.x < entity_box.p2.x)
+            camera_box.p2.x = entity_box.p2.x;
+        
+        if(camera_box.p2.y < entity_box.p2.y)
+            camera_box.p2.y = entity_box.p2.y;
+    }
+
+    // add camera margins
+    glm::vec2 camera_margin = glm::vec2(2.0f,2.0f);
+    camera_box.p1 -= camera_margin;
+    camera_box.p2 += camera_margin;
+
+    /*
+    calculate camera position from camera bounding box:
+    find mid point of camera box
+    */
+    camera_position.x = (camera_box.p1.x + camera_box.p2.x) * 0.5;
+    camera_position.y = (camera_box.p1.y + camera_box.p2.y) * 0.5;
+
+    /*
+    calculate scale from camera bounding box:
+    scale has units (screen height / screen width) / (1.0f)
+    */
+
+    //get camera dimensions
+    glm::vec2 cd = glm::vec2(
+        camera_box.p2.x - camera_box.p1.x,
+        camera_box.p2.y - camera_box.p1.y
+    );
+
+    scale =  SCREEN_ASPEC_R / (cd.x > cd.y ? cd.x : cd.y);
+
+    LOG(scale) LOG("\n")
 };
 void mbl::Scene::renderStateToSDL( SDL_Renderer* ctx /*pointer to render settings*/ ){
     //DEBUG render stage collision

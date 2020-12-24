@@ -20,6 +20,7 @@
 inline const int SCREEN_WIDTH = 640;
 inline const int SCREEN_HEIGHT = 480;
 inline const float SCREEN_ASPECT = ((float) SCREEN_WIDTH) / ((float) SCREEN_HEIGHT);
+inline const float SCREEN_ASPEC_R = ((float) SCREEN_HEIGHT) / ((float) SCREEN_WIDTH);
 inline const int SCREEN_FPS = 60;
 inline const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 

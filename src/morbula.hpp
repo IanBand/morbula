@@ -14,8 +14,13 @@
 ;namespace mbl{
 
 struct BoundingBox{
-	glm::vec2 p1;
-	glm::vec2 p2;
+    glm::vec2 p1; //bottom left
+    glm::vec2 p2; //top right
+    /*
+        p1 and p2 should satisfy:
+        p1.x < p2.x
+        p1.y < p2.y
+    */
 };
 
 /*******************************************************
@@ -271,7 +276,7 @@ private:
 	//camera stuff (make into own class?)
 	void calcCameraPosition(); // calculate the camera world position and scale based on entities with camera flags
 	glm::vec2 camera_position;
-	float scale; // pixel per float unit (1px / 1.0f); zoom factor;
+	float scale;
 	float scale_max;
 	float scale_min;
 	std::vector<mbl::Entity*> camera_entity_list; //list of entity pointers that the camera must include
