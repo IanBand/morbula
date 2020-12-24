@@ -97,11 +97,71 @@ struct PlayerAttribute
 
 inline PlayerAttribute test_char_attr1 {
 	"test_char_1",
-	0.02f, //gravity
+	0.002f, //gravity
+	1.0f, // rigidity; //landing/impact squash multiplier, wavedash squash/contortion
+	1.0f, // mass;
+	100 , // init_health;
+
+	1.0f, // init_walk_velocity;
+	1.0f, // walk_acceleration;
+	1.0f, // walk_max_velocity;
+
+	1.0f, // slow_walk_max_velocity;
+	1.0f, // mid_walk_max_velocity;
+	1.0f, // fast_walk_min_velocity;
+
+	1.0f, // init_dash_velocity;
+	1.0f, // run_acceleration;
+	1.0f, // run_max_velocity;
+
+	1.0f, // ground_friction;
+	3, // ground_jump_squat_frames;
+	1.0f, // base_vertical_jump_velocity;
+	1.0f, // base_back_horizontal_jump_velocity;  //horizontal jump velocity out of a forward direction jump
+	1.0f, // base_front_horizontal_jump_velocity; //horizontal jump velocity out of a backward direction jump
+	1.0f, // ground_to_air_speed_multiplier;
+
+	// when in the air, players can choose to be spinning or neutral. 
+	// These two states change the characters aerial drift attributes.
+	-0.06f, // slow_fall_velocity_max;
+	1.0f, // fast_fall_velocity_max;
+	1.0f, // horizontal_air_velocity_max;
+	1.0f, // neutral_air_friction;
+	1.0f, // spinning_air_friction;
 };
 inline PlayerAttribute test_char_attr2 {
 	"test_char_2",
-	0.026f, //gravity
+	0.0026f, //gravity
+	1.0f, // rigidity;
+	1.0f, // mass;
+	100 , // init_health;
+
+	1.0f, // init_walk_velocity;
+	1.0f, // walk_acceleration;
+	1.0f, // walk_max_velocity;
+
+	1.0f, // slow_walk_max_velocity;
+	1.0f, // mid_walk_max_velocity;
+	1.0f, // fast_walk_min_velocity;
+
+	1.0f, // init_dash_velocity;
+	1.0f, // run_acceleration;
+	1.0f, // run_max_velocity;
+
+	1.0f, // ground_friction;
+	3, // ground_jump_squat_frames;
+	1.0f, // base_vertical_jump_velocity;
+	1.0f, // base_back_horizontal_jump_velocity;  //horizontal jump velocity out of a forward direction jump
+	1.0f, // base_front_horizontal_jump_velocity; //horizontal jump velocity out of a backward direction jump
+	1.0f, // ground_to_air_speed_multiplier;
+
+	// when in the air, players can choose to be spinning or neutral. 
+	// These two states change the characters aerial drift attributes.
+	-0.05f, // slow_fall_velocity_max;
+	1.0f, // fast_fall_velocity_max;
+	1.0f, // horizontal_air_velocity_max;
+	1.0f, // neutral_air_friction;
+	1.0f, // spinning_air_friction;
 };
 }
 #endif

@@ -17,4 +17,10 @@ void mbl::Player::rollBackState(/* some pointer to a state*/){
     
 };
 void mbl::Player::computeNextState(){
+    //assuming airborne
+    velocity.y -= pa.gravity;
+    if(velocity.y < pa.slow_fall_velocity_max){
+        velocity.y = pa.slow_fall_velocity_max;
+    }
+    world_position += velocity;
 };

@@ -4,6 +4,7 @@
 #include "morbulaPlayerAttr.hpp"
 #include "morbulaEntityAttr.hpp"
 #include <vector>
+#include <algorithm> //clamp
 #include <glm/vec2.hpp>
 #include <glm/gtx/vector_angle.hpp>
 //#include <memory>
