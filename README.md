@@ -11,6 +11,7 @@ Made referencing the [Lazy Foo SDL tutorial](https://lazyfoo.net/tutorials/SDL/i
 ## Code Improvements
 - Create a makefile (!)
 - Currently only compiles with -w (supresses all warnings)
+- make some structs into simple classes with overloaded operators like ostream and +
 - Use namespaces in some more places
 - Probably many misspellings of "collision"
 - Use smart pointers or get a memory leak checker to work https://stackoverflow.com/questions/17855662/memory-check-library-for-mingw  http://wyw.dcweb.cn/leakage.htm

@@ -27,9 +27,6 @@ int main( int argc, char *argv[] )
 	{
 		std::cout << "Failed to init sdl!" << std::endl;
 	}
-	/*else if(!gca::Setup()){
-		printf( "Failed to init gca!\n" );
-	}*/
 	else
 	{
 		//Load media

@@ -1,33 +1,34 @@
 #ifndef GCM_HPP
 #define GCM_HPP
-#include <glm/vec2.hpp>
+#include<iostream>
+#include "../lib/gca-plus/GCAdapter.h"
+
 
 namespace gcm{
 
-enum GCPort : int {P1,P2,P3,P4};
+enum Port : int {P1,P2,P3,P4};
 
 // struct that is passed to game
-struct VirtualInputBank{
+struct VirtualInputs{
     
-    float left_analog;
-    float right_analog;
-    glm::vec2 primary_stick;
-    glm::vec2 secondary_stick;
+    double left_analog;
+    double right_analog;
+    // double trigger_analog; should game read one trigger analog or two?
+    double primary_stick_x;
+    double primary_stick_y;
+    double secondary_stick_x;
+    double secondary_stick_y;
     
-    bool jump;
-    bool attack1;
-    bool attack2;
-    bool aim_modifier;
-    bool shield;
-    bool grab;
-    bool cancel;
-
-    bool plugged_in;
+    
+    bool jump, attack1, attack2;
+    bool aim_modifier, shield;
+    bool grab, cancel, connected;
 };
 /***********************************
 Possible inputs used by the game
 ***********************************/
 enum GameInput: int {
+    unused,
     jump,
     attack1,
     attack2,
@@ -40,13 +41,33 @@ enum GameInput: int {
 maps phisical button data to game inputs
 ***************************************/
 struct InputMap{
-
-    float init_left_analog;
-    float init_right_analog;
-    glm::vec2 init_primary_stick;
-    glm::vec2 init_secondary_stick;
-
-    //need to look at how button data is read by gca
+    //information needeed to map ControllerStatus to VirtualInputs
+    GameInput buttonA, buttonB, buttonX, buttonY;
+	GameInput padLeft, padRight, padUp, padDown;
+	GameInput buttonL, buttonR, buttonZ, buttonStart;
+    
+};
+inline InputMap test_input_map = {
+    attack1, // A
+    attack2, // B
+    jump,    // X
+    jump,    // Y
+    unused,  // Dpad left
+    unused,  // Dpad right
+    unused,  // Dpad up
+    unused,  // Dpad down
+    shield,  // L digital
+    shield,  // R digital
+    grab,    // Z
+    unused   // start
+};
+struct Offsets{
+    double init_primary_x;
+    double init_primary_y;
+    double init_secondary_x;
+    double init_secondary_y;
+    double init_trigger_l;
+    double init_trigger_r;
 };
 
 class GCManager { //may extend input manager base class at some point in the future ...idk
@@ -54,17 +75,13 @@ class GCManager { //may extend input manager base class at some point in the fut
 public:
     GCManager();
     void pollInputs();
-    void setInputMap(InputMap*, GCPort);
-    VirtualInputBank* getInputBank(GCPort);
+    void setInputMap(InputMap*, Port);
+    VirtualInputs* getInputs(Port);
 
 private:
+    VirtualInputs virtual_inputs[4];
     InputMap maps[4];
-    VirtualInputBank banks[4];
-
+    Offsets offsets[4];
 };
-
-
-
-
 }
 #endif

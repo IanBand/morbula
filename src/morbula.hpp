@@ -22,6 +22,15 @@ struct BoundingBox{
         p1.y < p2.y
     */
 };
+/*
+class BoundingBox{
+public:
+	BoundingBox(float,float,float,float);
+    glm::vec2 p1; //bottom left
+    glm::vec2 p2; //top right
+	
+};
+*/
 
 /*******************************************************
 * Colors                                               *
