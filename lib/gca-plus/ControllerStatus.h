@@ -11,11 +11,10 @@ public:
 	bool padLeft, padRight, padUp, padDown;
 	bool buttonL, buttonR, buttonZ, buttonStart;
 
-	double mainStickHorizontal, mainStickVertical;
-	double cStickHorizontal, cStickVertical;
+	int mainStickHorizontal, mainStickVertical;
+	int cStickHorizontal, cStickVertical;
 
-	double triggerL, triggerR;
-	//ControllerStatus(); //gives linker error wtf
+	int triggerL, triggerR;
 };
 inline ostream& operator<<(ostream & string, ControllerStatus const &v) {
 	string << "{ connected: " << v.connected << ","

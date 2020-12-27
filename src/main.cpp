@@ -42,6 +42,7 @@ int main( int argc, char *argv[] )
 			//Main loop flag
 			bool quit = false;
 
+
 			//Event handler
 			SDL_Event e;
 
@@ -71,11 +72,10 @@ int main( int argc, char *argv[] )
 				}
 
 				// Get player input
-				/*ControllerStatus* status_buffer = gca::Process();
+				ControllerStatus* status_buffer = gca::Process();
 				std::cout << status_buffer[0] << std::endl;
-				delete status_buffer;
-				*/
-				std::cout << gca::RawData() << std::endl; 
+				
+				//std::cout << gca::RawData() << std::endl; 
 				// Compute next game state
 				morbula_scene.advanceGameState();
 
@@ -98,6 +98,8 @@ int main( int argc, char *argv[] )
 
 	//Free resources and close SDL
 	close();
+
+	gca::Stop();
 
 	return 0;
 }

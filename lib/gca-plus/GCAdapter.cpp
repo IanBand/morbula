@@ -4,6 +4,7 @@
 #include <atomic>
 #include <bitset>
 #include <iomanip>
+#include <algorithm>
 
 #include "GCAdapter.h"
 
@@ -16,6 +17,12 @@ libusb_context *context = nullptr;
 
 uint8_t controller_payload[37];
 uint8_t controller_payload_swap[37];
+
+ControllerStatus status_buffer[4];
+
+//first metadata struct is unused, this is just to make the array 1 indexed
+//change to std::array, & use bounds checking
+gca::ControllerMetadata metadata[4];
 
 atomic<int> controller_payload_size = { 0 };
 
@@ -203,11 +210,10 @@ namespace gca {
 		if (adapter_thread_running.TestAndClear()) {
 			adapter_thread.join();
 		}
-		ControllerStatus *arr = new ControllerStatus[4]; //TODO: avoid allocation of a new buffer every poll, just have a global buffer.
 		for (int i = 0; i < 4; i++) {
-			arr[i] = GetGamepadStatus(controller_payload, i + 1);
+			status_buffer[i] = GetGamepadStatus(controller_payload, i + 1);
 		}
-		return arr;
+		return status_buffer;
 	}
 	string RawData() {
 		adapter_thread_running.Set(true);
@@ -226,6 +232,21 @@ namespace gca {
 
 	ControllerStatus GetGamepadStatus(uint8_t * results, int port) {
 		ControllerStatus status;
+		int m_port = port - 1; //port is 1 indexed, metadata is 0 indexed
+
+		//reading metadata value causes "terminate called without an active exception"
+		
+		if(!metadata[m_port].connected_on_prev_poll){
+			
+			//keep track of init values at plugin
+			metadata[m_port].init_primary_x   = results[4 * port] - 128;
+			metadata[m_port].init_primary_y   = results[5 * port] - 128;
+			metadata[m_port].init_secondary_x = results[6 * port] - 128;
+			metadata[m_port].init_secondary_y = results[7 * port] - 128;
+			metadata[m_port].init_trigger_l   = results[8 * port];
+			metadata[m_port].init_trigger_r   = results[9 * port];
+			
+		}
 
 		status.connected = GetNthBit(results[1 * port], 5);
 
@@ -244,15 +265,23 @@ namespace gca {
 		status.buttonZ = GetNthBit(results[3 * port], 2);
 		status.buttonStart = GetNthBit(results[3 * port], 1);
 
-		status.mainStickHorizontal = results[4 * port] / 128.0 - 1;
-		status.mainStickVertical = results[5 * port] / 128.0 - 1;
+		status.mainStickHorizontal = results[4 * port] - 128 - metadata[m_port].init_primary_x;
+		status.mainStickVertical = results[5 * port] - 128 - metadata[m_port].init_primary_y;
 
-		status.cStickHorizontal = results[6 * port] / 128.0 - 1;
-		status.cStickVertical = results[7 * port] / 128.0 - 1;
+		status.cStickHorizontal = results[6 * port] - 128 - metadata[m_port].init_secondary_x;
+		status.cStickVertical = results[7 * port] - 128 - metadata[m_port].init_secondary_y;
 
-		status.triggerL = results[8 * port] / 256.0;
-		status.triggerR = results[9 * port] / 256.0;
+		status.triggerL = results[8 * port] - metadata[m_port].init_trigger_l;
+		status.triggerR = results[9 * port] - metadata[m_port].init_trigger_r;
+
+		// however writing does not cause this issue
+		metadata[m_port].connected_on_prev_poll = status.connected;
 
 		return status;
+	}
+	
+	void ResetCalibration(int port){
+		//controller calibration will reset on next poll
+		metadata[port].connected_on_prev_poll = false;
 	}
 }
