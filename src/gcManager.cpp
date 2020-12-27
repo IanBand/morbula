@@ -31,7 +31,8 @@ void GCManager::setInputMap(InputMap*, Port){
 
 };
 
-
+/*
 VirtualInputs* GCManager::getInputs(Port p){
     return &virtual_inputs[p];
 };
+*/

@@ -25,7 +25,7 @@ Made referencing the [Lazy Foo SDL tutorial](https://lazyfoo.net/tutorials/SDL/i
 - [SDL2_image](https://packages.msys2.org/base/mingw-w64-SDL2_image)
 - [SDL2_ttf](https://packages.msys2.org/base/mingw-w64-SDL2_ttf)
 - [glm](https://github.com/g-truc/glm)
-- [gca+](https://github.com/YonicDev/gca-plus)
+- [gca+](https://github.com/YonicDev/gca-plus) (modified)
 - [libusb](https://packages.msys2.org/package/mingw-w64-x86_64-libusb)
 
 ## Ideas & Notes

@@ -44,7 +44,8 @@ struct InputMap{
     //information needeed to map ControllerStatus to VirtualInputs
     GameInput buttonA, buttonB, buttonX, buttonY;
 	GameInput padLeft, padRight, padUp, padDown;
-	GameInput buttonL, buttonR, buttonZ, buttonStart;
+	GameInput buttonL, buttonR, buttonZ;
+    GameInput analogL, analogR;
     
 };
 inline InputMap test_input_map = {
@@ -61,14 +62,6 @@ inline InputMap test_input_map = {
     grab,    // Z
     unused   // start
 };
-struct Offsets{
-    double init_primary_x;
-    double init_primary_y;
-    double init_secondary_x;
-    double init_secondary_y;
-    double init_trigger_l;
-    double init_trigger_r;
-};
 
 class GCManager { //may extend input manager base class at some point in the future ...idk
 
@@ -79,9 +72,6 @@ public:
     VirtualInputs* getInputs(Port);
 
 private:
-    VirtualInputs virtual_inputs[4];
-    InputMap maps[4];
-    Offsets offsets[4];
 };
 }
 #endif

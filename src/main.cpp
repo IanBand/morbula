@@ -34,6 +34,9 @@ int main( int argc, char *argv[] )
 		{
 			std::cout << "Failed to load media" << std::endl;
 		}
+		else if(!gca::Setup()){
+			std::cout << "Failed to load gca" << std::endl;
+		}
 		else
 		{	
 			//Main loop flag
@@ -68,7 +71,11 @@ int main( int argc, char *argv[] )
 				}
 
 				// Get player input
-
+				/*ControllerStatus* status_buffer = gca::Process();
+				std::cout << status_buffer[0] << std::endl;
+				delete status_buffer;
+				*/
+				std::cout << gca::RawData() << std::endl; 
 				// Compute next game state
 				morbula_scene.advanceGameState();
 
