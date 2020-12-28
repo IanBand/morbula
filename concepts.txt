@@ -1,0 +1,38 @@
+budget animation ideas:
+
+the problem: 
+
+angle of surface needs to influence character animations
+
+some possible solutions: 
+
+* This problem is solved in melee by transforming the foot bones to align with the surface angle.
+* I cant use this solution because I cant handle 3d animation. (for now)
+
+* make all entity sprites that can interact with surfaces semishperical. clip models based on angle.
+
+* shear parts of sprite based on angle
+
+* make different sets of animations for different ranges of angles
+
+* make pure wireframe models, these could even be 3d?
+
+
+
+
+"precalculated" collision hash physics:
+https://matthias-research.github.io/pages/publications/tetraederCollision.pdf
+https://core.ac.uk/download/pdf/186700369.pdf
+essentially create a has table that hashes world coordinates into nearby surfaces that should be tested for collision
+
+* only works with static stage collision(?) would have to update table if a surface moves, or bake the surfaces potential movement into the cell lists
+
+draw grid around stage collision, cells of the grid do not have to be square, 
+the cells only have to be large enough to be an axis-aligned bounding box for the smallest surface in the scene
+create a table (2d array) that maps the cell indecies to a list (a "bucket" in hash table terms) of the surfaces contained in that cell
+
+at runtime, entities look up nearby surfaces to test for collision by converting their world coordinates into table indicies.
+
+problems: 
+complicated as shit
+no real way to limit the list sizes?
