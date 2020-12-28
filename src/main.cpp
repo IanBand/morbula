@@ -73,7 +73,7 @@ int main( int argc, char *argv[] )
 
 				// Get player input
 				ControllerStatus* status_buffer = gca::Process();
-				std::cout << status_buffer[0] << std::endl;
+				//std::cout << status_buffer[0] << std::endl;
 				
 				//std::cout << gca::RawData() << std::endl; 
 				// Compute next game state
