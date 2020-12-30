@@ -32,18 +32,21 @@ class Inputter {
         attack2, aim_modifier, 
         shield, grab, cancel;
 
-        int left_analog;
-        int right_analog;
-        int primary_stick_x;
-        int primary_stick_y;
-        int secondary_stick_x;
-        int secondary_stick_y;
+        float left_analog;
+        float right_analog;
+        float primary_stick_x;
+        float primary_stick_y;
+        float secondary_stick_x;
+        float secondary_stick_y;
+
+
     
 };
 
 class GCInputter : public Inputter{
     public:
-    void getInputs(int frame);
+    GCInputter(GCPort);
+    void getInputs(int);
     //button mappings; information needeed to map ControllerStatus to VirtualInputs
     GameInput buttonA, buttonB, buttonX, buttonY;
 	GameInput padLeft, padRight, padUp, padDown;
@@ -61,6 +64,17 @@ class GCInputter : public Inputter{
 
     static uint32_t last_poll_frame; //ensures one poll per frame for all GC controllers
     static ControllerStatus* status_buffer;
+
+    inline std::ostream& operator<<(std::ostream& str, const GCInputter& inp){
+        str << "connected: " << inp.connected << ", jump: " << inp.jump
+            << ", attack1: " << inp.attack1   << ", attack2: " << inp.attack2
+            << ", aim_modifier: " << inp.aim_modifier << ", shield: " << inp.shield
+            << ", grab: " << inp.grab << ", cancel: " << inp.cancel << std::endl
+            << "left analog: " << inp.left_analog << " right analog: " << inp.right_analog << std::endl
+            << "primary stick: (" << inp.primary_stick_x << ", " << inp.primary_stick_y << ")" << std::endl
+            << "secondary stick: (" << inp.secondary_stick_x << ", " << inp.secondary_stick_y << ")";
+        return str;
+    };
 };
 
 class TASInputter : public Inputter{

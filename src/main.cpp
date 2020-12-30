@@ -1,5 +1,6 @@
 #include "sdlUtil.hpp"
 #include "../lib/gca-plus/GCAdapter.h"
+#include "inputter.hpp"
 #include "morbula.hpp"
 #include "debugLogger.hpp"
 #include <csignal>
@@ -30,11 +31,13 @@ int main( int argc, char *argv[] )
 	mbl::Scene morbula_scene;
 
 	//menu state
-	//input manager
 
+	//input manager
+	input::GCInputter gc_input(input::GCPort::P1);
 
 	uint32_t prev_frame_ts;
 	uint32_t cur_ticks;
+	uint32_t frame_number = 0;
 
 	//Start up SDL and create window
 	if( !init() )
@@ -87,7 +90,9 @@ int main( int argc, char *argv[] )
 
 				// Get player input(?)
 				
-				//std::cout << gca::RawData() << std::endl; 
+				gc_input.getInputs(frame_number);
+				std::cout << gc_input << std::endl;
+
 				// Compute next game state
 				morbula_scene.advanceGameState();
 
@@ -104,6 +109,8 @@ int main( int argc, char *argv[] )
 
 				// Update screen
 				SDL_RenderPresent( gRenderer );
+
+				++frame_number;
 			}
 		}
 	}
