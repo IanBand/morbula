@@ -11,8 +11,8 @@ public:
 	bool padLeft, padRight, padUp, padDown;
 	bool buttonL, buttonR, buttonZ, buttonStart;
 
-	int mainStickHorizontal, mainStickVertical;
-	int cStickHorizontal, cStickVertical;
+	float mainStickHorizontal, mainStickVertical;
+	float cStickHorizontal, cStickVertical;
 
 	int triggerL, triggerR;
 };

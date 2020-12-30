@@ -12,6 +12,8 @@
 
 
 //make this into an SLDManager class
+//this class will also manage inputs, i.e. loop through inputters and poll them
+//will own inputter pointers
 
 //or give namespace?
 //https://stackoverflow.com/questions/51750227/namespace-for-external-library-in-c

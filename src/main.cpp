@@ -2,7 +2,17 @@
 #include "../lib/gca-plus/GCAdapter.h"
 #include "morbula.hpp"
 #include "debugLogger.hpp"
+#include <csignal>
 
+void sigHandler( int signum ) {
+   std::cout << "Interrupt signal (" << signum << ") received.\n";
+
+   // cleanup and close up stuff here  
+   // terminate program
+https://stackoverflow.com/questions/16768363/exception-handling-and-stacktrace-under-windows-mingw-gcc   	close(); //sdl
+	gca::Stop();
+	exit(signum);
+};
 
 
 int main( int argc, char *argv[] )
@@ -11,6 +21,10 @@ int main( int argc, char *argv[] )
 	LOG(" __       __   ______   _______   _______   __    __  __         ______\n/  \\     /  | /      \\ /       \\ /       \\ /  |  /  |/  |       /      \\\n$$  \\   /$$ |/$$$$$$  |$$$$$$$  |$$$$$$$  |$$ |  $$ |$$ |      /$$$$$$  |\n$$$  \\ /$$$ |$$ |  $$ |$$ |__$$ |$$ |__$$ |$$ |  $$ |$$ |      $$ |__$$ |\n$$$$  /$$$$ |$$ |  $$ |$$    $$< $$    $$< $$ |  $$ |$$ |      $$    $$ |\n$$ $$ $$/$$ |$$ |  $$ |$$$$$$$  |$$$$$$$  |$$ |  $$ |$$ |      $$$$$$$$ |\n$$ |$$$/ $$ |$$ \\__$$ |$$ |  $$ |$$ |__$$ |$$ \\__$$ |$$ |_____ $$ |  $$ |\n$$ | $/  $$ |$$    $$/ $$ |  $$ |$$    $$/ $$    $$/ $$       |$$ |  $$ |\n$$/      $$/  $$$$$$/  $$/   $$/ $$$$$$$/   $$$$$$/  $$$$$$$$/ $$/   $$/\n\n")
 	LOG("*** This is a development build from ") LOG( __DATE__ ) LOG(" at ") LOG( __TIME__ )
 	LOG("\n*** Check https://github.com/IanBand/morbula for the latest development push!\n\n")
+
+
+	std::signal(SIGINT,  sigHandler);
+	std::signal(SIGSEGV, sigHandler);
 
 	//game state
 	mbl::Scene morbula_scene;
@@ -71,9 +85,7 @@ int main( int argc, char *argv[] )
 					}
 				}
 
-				// Get player input
-				ControllerStatus* status_buffer = gca::Process();
-				//std::cout << status_buffer[0] << std::endl;
+				// Get player input(?)
 				
 				//std::cout << gca::RawData() << std::endl; 
 				// Compute next game state
@@ -102,4 +114,4 @@ int main( int argc, char *argv[] )
 	gca::Stop();
 
 	return 0;
-}
+};

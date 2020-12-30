@@ -265,11 +265,11 @@ namespace gca {
 		status.buttonZ = GetNthBit(results[3 * port], 2);
 		status.buttonStart = GetNthBit(results[3 * port], 1);
 
-		status.mainStickHorizontal = results[4 * port] - 128 - metadata[m_port].init_primary_x;
-		status.mainStickVertical = results[5 * port] - 128 - metadata[m_port].init_primary_y;
+		status.mainStickHorizontal = 0.0125f * std::clamp(results[4 * port] - 128 - metadata[m_port].init_primary_x, -80, 80);
+		status.mainStickVertical   = 0.0125f * std::clamp(results[5 * port] - 128 - metadata[m_port].init_primary_y, -80, 80);
 
-		status.cStickHorizontal = results[6 * port] - 128 - metadata[m_port].init_secondary_x;
-		status.cStickVertical = results[7 * port] - 128 - metadata[m_port].init_secondary_y;
+		status.cStickHorizontal    = 0.0125f * std::clamp(results[6 * port] - 128 - metadata[m_port].init_secondary_x, -80, 80);
+		status.cStickVertical      = 0.0125f * std::clamp(results[7 * port] - 128 - metadata[m_port].init_secondary_y, -80, 80);
 
 		status.triggerL = results[8 * port] - metadata[m_port].init_trigger_l;
 		status.triggerR = results[9 * port] - metadata[m_port].init_trigger_r;
