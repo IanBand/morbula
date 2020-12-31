@@ -11,7 +11,7 @@ enum GCPort : int {P1,P2,P3,P4};
 Possible inputs used by the game
 ***********************************/
 enum GameInput: int {
-    connected, //unused
+    unused, //unused
     jump,
     attack1,
     attack2,
@@ -47,10 +47,10 @@ class GCInputter : public Inputter{
     GCInputter(GCPort);
     void getInputs(int);
     //button mappings; information needeed to map ControllerStatus to VirtualInputs
-    GameInput buttonA, buttonB, buttonX, buttonY;
-	GameInput padLeft, padRight, padUp, padDown;
-	GameInput buttonL, buttonR, buttonZ;
-    GameInput analogL, analogR;
+    GameInput buttonA = unused, buttonB = unused, buttonX = unused, buttonY = unused;
+	GameInput padLeft = unused, padRight = unused, padUp = unused, padDown = unused;
+	GameInput buttonL = unused, buttonR = unused, buttonZ = unused;
+    GameInput analogL = unused, analogR = unused;
 
     //lots and lots of button mapping potential...
     /*bool swap_sticks;
