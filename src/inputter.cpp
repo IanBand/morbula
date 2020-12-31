@@ -1,11 +1,24 @@
 #include "inputter.hpp"
 
-
-
 // define + init static members
 uint32_t input::GCInputter::last_poll_frame = 0;
 ControllerStatus* input::GCInputter::status_buffer = NULL;
 
+
+/*std::ostream& operator<<(std::ostream& os, const shapes::Triangle& tri){
+    os << tri.fuck << std::endl;
+    return os;
+}*/
+std::ostream& operator<<(std::ostream& os, const input::GCInputter& inp){
+        os << "connected: " << inp.connected << ", jump: " << inp.jump
+            << ", attack1: " << inp.attack1   << ", attack2: " << inp.attack2
+            << ", aim_modifier: " << inp.aim_modifier << ", shield: " << inp.shield
+            << ", grab: " << inp.grab << ", cancel: " << inp.cancel << std::endl
+            << "left analog: " << inp.left_analog << " right analog: " << inp.right_analog << std::endl
+            << "primary stick: (" << inp.primary_stick_x << ", " << inp.primary_stick_y << ")" << std::endl
+            << "secondary stick: (" << inp.secondary_stick_x << ", " << inp.secondary_stick_y << ")";
+        return os;
+};
 
 input::GCInputter::GCInputter(GCPort _port){
     port = _port;
@@ -20,7 +33,7 @@ void input::GCInputter::getInputs(int frame){
 
     // map phisical gc_inputs to virtual game_inputs
     // loop through the 11 digital buttons on the GC controller & 11 button mappings
-    bool *virtual_inputs = &connected;                  //virtual input array
+    /*bool *virtual_inputs = &connected;                  //virtual input array
     bool *gc_inputs = &(status_buffer[port].buttonA);   //physical input array
     GameInput *button_map = &buttonA;                   //map array
 
@@ -41,5 +54,6 @@ void input::GCInputter::getInputs(int frame){
     secondary_stick_y = status_buffer[port].cStickVertical;
 
     connected = status_buffer[port].connected;
+    */
 
 };

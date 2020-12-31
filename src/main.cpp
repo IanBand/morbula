@@ -8,9 +8,9 @@
 void sigHandler( int signum ) {
    std::cout << "Interrupt signal (" << signum << ") received.\n";
 
-   // cleanup and close up stuff here  
-   // terminate program
-https://stackoverflow.com/questions/16768363/exception-handling-and-stacktrace-under-windows-mingw-gcc   	close(); //sdl
+   	// cleanup and close up stuff here  
+   	// terminate program
+	// https://stackoverflow.com/questions/16768363/exception-handling-and-stacktrace-under-windows-mingw-gcc   	close(); //sdl
 	gca::Stop();
 	exit(signum);
 };
