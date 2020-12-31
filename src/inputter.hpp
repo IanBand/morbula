@@ -62,7 +62,7 @@ class GCInputter : public Inputter{
     GCPort port;
 
     static uint32_t last_poll_frame; //ensures one poll per frame for all GC controllers
-    static ControllerStatus* status_buffer;
+    static ControllerStatus controller_buffer[4];
 };
 
 class TASInputter : public Inputter{

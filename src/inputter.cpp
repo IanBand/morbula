@@ -2,7 +2,7 @@
 
 // define + init static members
 uint32_t input::GCInputter::last_poll_frame = 0;
-ControllerStatus* input::GCInputter::status_buffer = NULL;
+ControllerStatus input::GCInputter::controller_buffer[4];
 
 
 /*std::ostream& operator<<(std::ostream& os, const shapes::Triangle& tri){
@@ -27,7 +27,7 @@ void input::GCInputter::getInputs(int frame){
 
     // ensure that the gamecube status buffer is updated only once per frame
     if(last_poll_frame != frame){
-        status_buffer = gca::Process();
+        gca::Process(controller_buffer);
         last_poll_frame = frame;
     }
 
@@ -65,5 +65,6 @@ void input::GCInputter::getInputs(int frame){
 
     connected = status_buffer[port].connected;
     */
+    connected = controller_buffer[port].connected;
 
 };

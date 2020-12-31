@@ -18,8 +18,6 @@ libusb_context *context = nullptr;
 uint8_t controller_payload[37];
 uint8_t controller_payload_swap[37];
 
-ControllerStatus status_buffer[4];
-
 //first metadata struct is unused, this is just to make the array 1 indexed
 //change to std::array, & use bounds checking
 gca::ControllerMetadata metadata[4];
@@ -204,16 +202,15 @@ namespace gca {
 		unsigned int bit = (unsigned)(number & (1 << n - 1));
 		return bit >> n - 1;
 	}
-	ControllerStatus* Process() {
+	void Process(ControllerStatus* buffer) {
 		adapter_thread_running.Set(true);
 		adapter_thread = thread(Read);
 		if (adapter_thread_running.TestAndClear()) {
 			adapter_thread.join();
 		}
 		for (int i = 0; i < 4; i++) {
-			status_buffer[i] = GetGamepadStatus(controller_payload, i + 1);
+			buffer[i] = GetGamepadStatus(controller_payload, i + 1);
 		}
-		return status_buffer;
 	}
 	string RawData() {
 		adapter_thread_running.Set(true);

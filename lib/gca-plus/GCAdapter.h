@@ -27,7 +27,7 @@ namespace gca {
 	int Load();
 	int Setup();
 	std::string Request();
-	ControllerStatus* Process();
+	void Process(ControllerStatus*);
 	int Stop();
 	std::string RawData();
 	void Read();
