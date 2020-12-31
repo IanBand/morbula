@@ -2,7 +2,7 @@
 
 // define + init static members
 uint32_t input::GCInputter::last_poll_frame = 0;
-ControllerStatus input::GCInputter::controller_buffer[4];
+ControllerStatus input::GCInputter::adapter_buffer[4];
 
 
 /*std::ostream& operator<<(std::ostream& os, const shapes::Triangle& tri){
@@ -27,44 +27,41 @@ void input::GCInputter::getInputs(int frame){
 
     // ensure that the gamecube status buffer is updated only once per frame
     if(last_poll_frame != frame){
-        gca::Process(controller_buffer);
+        gca::Process(adapter_buffer);
         last_poll_frame = frame;
     }
 
     // map phisical gc_inputs to virtual game_inputs
-    // loop through the 11 digital buttons on the GC controller & 11 button mappings
 
-    //bool *virtual_inputs = &connected;                  //virtual input array
-    //bool *gc_inputs = &(status_buffer[port].buttonA);   //physical input array
-    //GameInput *button_map = &buttonA;                   //map array
+    bool *virtual_inputs = &connected;                   //virtual input array
+    bool *gc_inputs = &(adapter_buffer[port].buttonA);   //physical input array
+    GameInput *button_map = &buttonA;                    //button -> input map
 
-
-    //seg faults because this thread does not have access to status_buffer. 
-    //Thats probably why a new status buffer was being allocated every call of Process()
-    //maybe try passing in a static buffer that GCInputter owns
-    //if not just allocate one every poll and delete like how the vanilla library did it, nbd.
-
-    /*
-    for(int i = 0; i < 11; ++i){
-        virtual_inputs[button_map[i]] = gc_inputs[i];
+    //clear all 8 virtual inputs
+    for(int i = 0; i < 8; ++i){
+        virtual_inputs[i] = false;
     }
-    */
 
-    //maped analog -> digital inputs 
-    //virtual_inputs[analogL] = (status_buffer[port].triggerL > 0);
-    //virtual_inputs[analogR] = (status_buffer[port].triggerR > 0);
+    // loop through the 11 digital buttons on the GC controller & 11 button mappings
+    for(int i = 0; i < 11; ++i){
+        virtual_inputs[button_map[i]] |= gc_inputs[i];
+    }
+    
+
+    //maped analog -> digital inputs
+    virtual_inputs[analogL] |= (adapter_buffer[port].triggerL > 1); //1 is the "analog press threshold"
+    virtual_inputs[analogR] |= (adapter_buffer[port].triggerR > 1);
 
     //could do this in a loop or memcopy or somethin
-    /*
-    left_analog       = status_buffer[port].triggerL;
-    right_analog      = status_buffer[port].triggerR;
-    primary_stick_x   = status_buffer[port].mainStickHorizontal;
-    primary_stick_y   = status_buffer[port].mainStickVertical;
-    secondary_stick_x = status_buffer[port].cStickHorizontal;
-    secondary_stick_y = status_buffer[port].cStickVertical;
+    
+    left_analog       = adapter_buffer[port].triggerL; // could instead subtract "analog press threshold" here, & calc virtual analog L/R binary input from these values 
+    right_analog      = adapter_buffer[port].triggerR;
+    primary_stick_x   = adapter_buffer[port].mainStickHorizontal;
+    primary_stick_y   = adapter_buffer[port].mainStickVertical;
+    secondary_stick_x = adapter_buffer[port].cStickHorizontal;
+    secondary_stick_y = adapter_buffer[port].cStickVertical;
 
-    connected = status_buffer[port].connected;
-    */
-    connected = controller_buffer[port].connected;
+    connected = adapter_buffer[port].connected;
+
 
 };

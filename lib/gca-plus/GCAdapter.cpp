@@ -268,8 +268,8 @@ namespace gca {
 		status.cStickHorizontal    = 0.0125f * std::clamp(results[6 * port] - 128 - metadata[m_port].init_secondary_x, -80, 80);
 		status.cStickVertical      = 0.0125f * std::clamp(results[7 * port] - 128 - metadata[m_port].init_secondary_y, -80, 80);
 
-		status.triggerL = results[8 * port] - metadata[m_port].init_trigger_l;
-		status.triggerR = results[9 * port] - metadata[m_port].init_trigger_r;
+		status.triggerL = std::clamp(results[8 * port] - metadata[m_port].init_trigger_l, 0, 255);
+		status.triggerR = std::clamp(results[9 * port] - metadata[m_port].init_trigger_r, 0, 255);
 
 		// however writing does not cause this issue
 		metadata[m_port].connected_on_prev_poll = status.connected;

@@ -47,10 +47,20 @@ class GCInputter : public Inputter{
     GCInputter(GCPort);
     void getInputs(int);
     //button mappings; information needeed to map ControllerStatus to VirtualInputs
-    GameInput buttonA = unused, buttonB = unused, buttonX = unused, buttonY = unused;
-	GameInput padLeft = unused, padRight = unused, padUp = unused, padDown = unused;
-	GameInput buttonL = unused, buttonR = unused, buttonZ = unused;
-    GameInput analogL = unused, analogR = unused;
+    GameInput 
+        buttonA  = GameInput::attack1, 
+        buttonB  = GameInput::attack2, 
+        buttonX  = GameInput::jump, 
+        buttonY  = GameInput::jump, 
+        padLeft  = GameInput::unused, 
+        padRight = GameInput::unused, 
+        padUp    = GameInput::unused, 
+        padDown  = GameInput::unused, 
+        buttonL  = GameInput::shield, 
+        buttonR  = GameInput::shield, 
+        buttonZ  = GameInput::grab, 
+        analogL  = GameInput::cancel, 
+        analogR  = GameInput::cancel;
 
     //lots and lots of button mapping potential...
     /*bool swap_sticks;
@@ -62,7 +72,7 @@ class GCInputter : public Inputter{
     GCPort port;
 
     static uint32_t last_poll_frame; //ensures one poll per frame for all GC controllers
-    static ControllerStatus controller_buffer[4];
+    static ControllerStatus adapter_buffer[4];
 };
 
 class TASInputter : public Inputter{

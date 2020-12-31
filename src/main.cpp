@@ -91,7 +91,7 @@ int main( int argc, char *argv[] )
 				// Get player input(?)
 				
 				gc_input.getInputs(frame_number);
-				std::cout << gc_input << std::endl;
+				std::cout << gc_input << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
 
 				// Compute next game state
 				morbula_scene.advanceGameState();
