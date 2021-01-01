@@ -4,11 +4,6 @@
 uint32_t input::GCInputter::last_poll_frame = 0;
 ControllerStatus input::GCInputter::adapter_buffer[4];
 
-
-/*std::ostream& operator<<(std::ostream& os, const shapes::Triangle& tri){
-    os << tri.fuck << std::endl;
-    return os;
-}*/
 std::ostream& operator<<(std::ostream& os, const input::GCInputter& inp){
         os << "connected: " << inp.connected << ", jump: " << inp.jump
             << ", attack1: " << inp.attack1   << ", attack2: " << inp.attack2
@@ -24,6 +19,7 @@ input::GCInputter::GCInputter(GCPort _port){
     port = _port;
 };
 void input::GCInputter::getInputs(int frame){
+    //TODO: map start button
 
     // ensure that the gamecube status buffer is updated only once per frame
     if(last_poll_frame != frame){
@@ -49,10 +45,10 @@ void input::GCInputter::getInputs(int frame){
     
 
     //maped analog -> digital inputs
-    virtual_inputs[analogL] |= (adapter_buffer[port].triggerL > 1); //1 is the "analog press threshold"
-    virtual_inputs[analogR] |= (adapter_buffer[port].triggerR > 1);
+    virtual_inputs[analogL] |= (adapter_buffer[port].triggerL > 4); //analog press threshold
+    virtual_inputs[analogR] |= (adapter_buffer[port].triggerR > 4);
 
-    //could do this in a loop or memcopy or somethin
+    //could do this in a loop or memcopy or somethin like above
     
     left_analog       = adapter_buffer[port].triggerL; // could instead subtract "analog press threshold" here, & calc virtual analog L/R binary input from these values 
     right_analog      = adapter_buffer[port].triggerR;
@@ -63,5 +59,6 @@ void input::GCInputter::getInputs(int frame){
 
     connected = adapter_buffer[port].connected;
 
+    //std::cout << *this << std::endl;
 
 };

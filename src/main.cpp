@@ -27,16 +27,22 @@ int main( int argc, char *argv[] )
 	std::signal(SIGINT,  sigHandler);
 	std::signal(SIGSEGV, sigHandler);
 
-	//game state
-	mbl::Scene morbula_scene;
-
 	//menu state
 
 	//input manager
+	std::vector<input::Inputter*> inputs;
+	
+	//create input(s)
 	input::GCInputter gc_input(input::GCPort::P1);
+	inputs.push_back(&gc_input);
+
+	//game state
+	mbl::Scene morbula_scene;
 
 	uint32_t prev_frame_ts;
 	uint32_t cur_ticks;
+
+	//global frame number
 	uint32_t frame_number = 0;
 
 	//Start up SDL and create window
@@ -88,10 +94,11 @@ int main( int argc, char *argv[] )
 					}
 				}
 
-				// Get player input(?)
-				
-				gc_input.getInputs(frame_number);
-				std::cout << gc_input << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+				// Get inputs
+				for(input::Inputter *input : inputs ){
+					input->getInputs(frame_number);
+					//check if start button is pushed on any inputter
+    			}
 
 				// Compute next game state
 				morbula_scene.advanceGameState();

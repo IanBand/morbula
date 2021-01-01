@@ -57,10 +57,10 @@ class GCInputter : public Inputter{
         padUp    = GameInput::unused, 
         padDown  = GameInput::unused, 
         buttonL  = GameInput::shield, 
-        buttonR  = GameInput::shield, 
+        buttonR  = GameInput::aim_modifier, 
         buttonZ  = GameInput::grab, 
         analogL  = GameInput::cancel, 
-        analogR  = GameInput::cancel;
+        analogR  = GameInput::aim_modifier;
 
     //lots and lots of button mapping potential...
     /*bool swap_sticks;
