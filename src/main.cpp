@@ -97,7 +97,7 @@ int main( int argc, char *argv[] )
 				// Get inputs
 				for(input::Inputter *input : inputs ){
 					input->getInputs(frame_number);
-					//check if start button is pushed on any inputter
+					//check if start button is pushed on any inputter  
     			}
 
 				// Compute next game state

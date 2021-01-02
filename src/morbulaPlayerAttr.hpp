@@ -8,6 +8,7 @@ struct PlayerAttribute
 
 	// loosely based on ssbm character attributes
     // https://docs.google.com/spreadsheets/d/1WqxJWDXbPDDYhjV5Vo34qTiCxmHSqg_Wr6GKKyLrH2M/
+	// https://docs.google.com/spreadsheets/d/1lgDegOcTFSSW6jgQK3LxAfhFqWQRhO3g7TbsuseVJS8/edit#gid=424158709
 
 	char name[20];
 

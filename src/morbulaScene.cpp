@@ -206,3 +206,31 @@ void mbl::Scene::renderStateToSDL( SDL_Renderer* ctx /*pointer to render setting
     }
 };
 
+bool mbl::Scene::testIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
+    //en.wikipedia.org/wiki/Line–line_intersection bless wikipedia
+
+
+    float denominator, u_numerator, t_numerator;
+    denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+    /*
+    "The intersection point falls within the first line segment if 0.0 ≤ t ≤ 1.0, and it falls within the second line segment if 0.0 ≤ u ≤ 1.0. 
+     These inequalities can be tested without need for division." 
+    */
+
+    t_numerator =           (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)  ;
+    u_numerator = -1.0f * ( (x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3) );
+
+    if( 
+        0.0f <= t_numerator        &&
+        t_numerator <= denominator &&
+        0.0f <= u_numerator        &&
+        u_numerator <= denominator
+    ){
+        //lines intersect
+    }
+
+    //the line (x3,y3) -> (x4,y4) is the surface
+    //we return u so that it can be used as the entity position on the surface.
+    return false;
+};

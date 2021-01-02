@@ -276,6 +276,7 @@ public:
 
 private:
 	static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);
+	static bool testIntersection(float, float, float, float, float, float, float, float);
 	std::vector<mbl::Entity*> entities; //should there be a collidable entities list? or just skip entities that aren't collidable
 	Stage *stage;
 	unsigned int scene_frame_number;
