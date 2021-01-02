@@ -193,7 +193,6 @@ void mbl::Scene::renderStateToSDL( SDL_Renderer* ctx /*pointer to render setting
     mbl::Color BBColor  = mbl::light_blue;
     mbl::Color cxhColor = mbl::red;
     
-
     for(mbl::Entity *entity : entities ){
         SDL_SetRenderDrawColor( ctx, ecbColor.r, ecbColor.g, ecbColor.b, 0xff );
         entity->DEBUG_ecbDraw         (ctx, &camera_position, scale, mbl::Scene::SDL_DrawLineFromWorldCoord);
@@ -205,10 +204,14 @@ void mbl::Scene::renderStateToSDL( SDL_Renderer* ctx /*pointer to render setting
         entity->DEBUG_posCrossHairDraw(ctx, &camera_position, scale, mbl::Scene::SDL_DrawLineFromWorldCoord);
     }
 };
-
-bool mbl::Scene::testIntersection(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
+/*
+        the line (x3,y3) -> (x4,y4) is the surface
+        the line (x1,y1) -> (x2,y2) is the interpolation between prev and projected ECB points.
+        u is returned so that it can be used as the entity position on the surface. 0.0f <= u <= 1.0f
+        if the lines do not intersect, -1.0f will be returned instead
+*/
+float mbl::Scene::surfaceCollidePoint(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4){
     //en.wikipedia.org/wiki/Line–line_intersection bless wikipedia
-
 
     float denominator, u_numerator, t_numerator;
     denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
@@ -227,10 +230,8 @@ bool mbl::Scene::testIntersection(float x1, float y1, float x2, float y2, float 
         0.0f <= u_numerator        &&
         u_numerator <= denominator
     ){
-        //lines intersect
+        //lines intersect, only perform division now
+        return u_numerator / denominator;
     }
-
-    //the line (x3,y3) -> (x4,y4) is the surface
-    //we return u so that it can be used as the entity position on the surface.
-    return false;
+    return -1.0f;
 };

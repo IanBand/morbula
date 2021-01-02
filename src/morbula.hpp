@@ -153,6 +153,10 @@ class Entity
 public:
     Entity(EntityInit *, EntityAttribute *);
 	virtual void computeNextState() = 0;
+	/*
+	void computeNextState();
+	private virtual void secondaryComputeNextState() = 0;
+	*/
 	virtual void rollBackState(/* some pointer to a state*/) = 0;
 	//virtual void render() = 0; //might not even be virtual tbh
 	void DEBUG_ecbDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
@@ -276,7 +280,7 @@ public:
 
 private:
 	static void SDL_DrawLineFromWorldCoord( SDL_Renderer*, glm::vec2*, float, float, float, float, float);
-	static bool testIntersection(float, float, float, float, float, float, float, float);
+	static float surfaceCollidePoint(float, float, float, float, float, float, float, float);
 	std::vector<mbl::Entity*> entities; //should there be a collidable entities list? or just skip entities that aren't collidable
 	Stage *stage;
 	unsigned int scene_frame_number;
