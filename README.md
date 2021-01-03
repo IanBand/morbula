@@ -7,7 +7,7 @@ A barebones 2d game/collision engine for personal project(s). Mostly focused aro
 Made referencing the [Lazy Foo SDL tutorial](https://lazyfoo.net/tutorials/SDL/index.php).
 
 ## Project Goals
-- Make the physics engine abstract enough that 3d assets can eventually be used, perhaps with another rendering engine alltogether
+- Make the (2d) physics engine abstract enough that 3d assets can eventually be used, perhaps with another rendering engine alltogether
 - Keep the game state sufficently sepeprated from the rendering logic to allow for rollback netcode via [ggpo](https://github.com/pond3r/ggpo)
 
 ## Code Improvements
