@@ -12,7 +12,7 @@ mbl::Player::Player(
     //memcpy(&pa, _player_attr, sizeof(mbl::PlayerAttribute));
     pa = *_player_attr;
     
-    velocity = glm::vec2(0.03f, 0.1f); //init to (0,0)
+    velocity = glm::vec2(0.012f, 0.1f); //init to (0,0)
     
 };
 void mbl::Player::rollBackState(/* some pointer to a state*/){

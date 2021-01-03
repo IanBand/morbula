@@ -98,7 +98,7 @@ struct PlayerAttribute
 
 inline PlayerAttribute test_char_attr1 {
 	"test_char_1",
-	0.002f, //gravity
+	0.0024f, //gravity
 	1.0f, // rigidity; //landing/impact squash multiplier, wavedash squash/contortion
 	1.0f, // mass;
 	100 , // init_health;

@@ -22,17 +22,20 @@ mbl::Scene::Scene(){
         &mbl::test_entity_attr1
     );
 
+    /*
     mbl::Player *test_p2 = new mbl::Player( 
         &mbl::test_char_attr2,
         &mbl::entity_init2,
         &mbl::test_entity_attr2
     );
+    */
 
     entities.push_back(test_p1);
     camera_entity_list.push_back(test_p1);//test_p1 is now tracked by the camera
+    /*
     entities.push_back(test_p2);
     camera_entity_list.push_back(test_p2);//test_p1 is now tracked by the camera
-
+    */
     stage = &mbl::test_stage; //prog crashes without this
 
     camera_position = glm::vec2(0.0f,0.2f); //init camera position will be defined in scene data structure
@@ -82,13 +85,49 @@ void mbl::Scene::SDL_DrawLineFromWorldCoord( SDL_Renderer* ctx, glm::vec2* camer
 void mbl::Scene::advanceGameState(){
     ++scene_frame_number;
 
-    //temp camera zoom demo
-    //float base_scale = 0.1f;
-    //scale = base_scale + std::sin(scene_frame_number * 0.025) * 0.01; 
+    /*
+    shitty camera zoom demo
+    float base_scale = 0.1f;
+    scale = base_scale + std::sin(scene_frame_number * 0.025) * 0.01; 
+    */
 
-    //calc next state of each entity... at this point Im convinced I have to split this up into the different arrays for different child classes of entity
-    //so that their unique computeNextState() functions can be called
     for(mbl::Entity *entity : entities ){
+
+        if(entity->surface_id == -1){ // if entity is airborn, i.e. not bound to a surface
+            
+            //TODO: need a broad surface collide test
+            for(int i = 0; i < stage->surfaces.size(); ++i){
+                //narrow entity surface collision test
+                mbl::Surface surface = stage->surfaces.at(i);
+                
+                //test entity ecb floor collision
+                mbl::Line ecb_bottom_transit = entity->bottomWorldTravelLine();
+                float floor_position = surfaceCollidePoint(
+                    ecb_bottom_transit.p1.x,
+                    ecb_bottom_transit.p1.y,
+                    ecb_bottom_transit.p2.x,
+                    ecb_bottom_transit.p2.y,
+                    stage->vertices[surface.v1].x,
+                    stage->vertices[surface.v1].y,
+                    stage->vertices[surface.v2].x,
+                    stage->vertices[surface.v2].y
+                );
+                //test entity ecb left wall collision
+                //test entity ecb right wall collision
+                //test entity ecb ceiling collision
+
+                //LOG("floor position: ") LOG(floor_position) LOG("\n");
+
+                //will need 16 cases in theory, 
+                //cases range from no collisions to all collisions
+                //priority of cases will be very important
+                if(floor_position <= 0){ 
+                    entity->surface_id = i;
+                    entity->surface_position = floor_position;
+                }
+
+            }
+        }
         entity->computeNextState();
     }
 

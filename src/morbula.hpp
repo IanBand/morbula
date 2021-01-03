@@ -104,7 +104,7 @@ struct Surface
 struct Stage{ //struct details stage collision and points to graphical stage data.
 	//include camera bounds, liquid areas + positions
 
-	std::vector<glm::vec2> vertices; 
+	std::vector<glm::vec2> vertices;
     std::vector<Surface> surfaces;
     float height;
     float width;
