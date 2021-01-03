@@ -22,6 +22,17 @@ struct BoundingBox{
         p1.y < p2.y
     */
 };
+	/*float ecb_bottom; // y-axis world distance between bottom of ecb diamond and base position
+	float ecb_top;    // y-axis world distance between top of ecb diamond and base position
+	float ecb_mid;	  // y-axis world distance between middle of ecb diamond and base position
+	float ecb_left;	  // x-axis world distance between left of ecb diamond and base position
+	float ecb_right;  // x-axis world distance between right of ecb diamond and base position
+	*/
+struct ECB{float bottom, top, mid, left, right;};
+struct Line{ 
+	glm::vec2 p1; // current point in time
+	glm::vec2 p2; // prev point in time
+};
 /*
 class BoundingBox{
 public:
@@ -143,7 +154,6 @@ inline EntityInit entity_init2 = {
     true,        //bool visible;
     mbl::lime    //Color overlay;
 };
-
 /*******************************************************
 * Entity                                               *
 *******************************************************/
@@ -153,16 +163,18 @@ class Entity
 public:
     Entity(EntityInit *, EntityAttribute *);
 	virtual void computeNextState() = 0;
-	/*
-	void computeNextState();
-	private virtual void secondaryComputeNextState() = 0;
-	*/
 	virtual void rollBackState(/* some pointer to a state*/) = 0;
-	//virtual void render() = 0; //might not even be virtual tbh
+	//virtual void render() = 0; //might not even to be virtual tbh
 	void DEBUG_ecbDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_BBDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	void DEBUG_posCrossHairDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
 	mbl::BoundingBox boundingBox();
+	mbl::Line bottomWorldTravelLine();
+	mbl::Line topWorldTravelLine();
+	mbl::Line leftWorldTravelLine();
+	mbl::Line rightWorldTravelLine();
+	int surface_id;
+	float surface_position;
 	//glm::vec2 ecb_right(){return glm::vec2(0.0f,0.0f)}; // should these be in world space or entity space???
 	// have a debug draw for ecb, camera, ect...
 	//virtual void entityCollide(){};
@@ -171,8 +183,8 @@ public:
 	//virtual ModelData *loadModel(); //might not go here
 protected:
 	glm::vec2 world_position; // also reffered to as base position
-	int surface_id;
-	float surface_position;
+	glm::vec2 prev_world_position;
+	glm::vec2 velocity;
 
 	// appearence
 	bool visible;
@@ -184,13 +196,11 @@ protected:
 
 	EntityAttribute ea; // don't mutate contents
 
-	// ecb state, coordinates relative to world_position
-	float ecb_bottom; // y-axis world distance between bottom of ecb diamond and base position
-	float ecb_top;    // y-axis world distance between top of ecb diamond and base position
-	float ecb_mid;	  // y-axis world distance between middle of ecb diamond and base position
-	float ecb_left;	  // x-axis
-	float ecb_right;
+	int ecb_lock; //decrimented every frame, if ecb_lock > 0, do not update ecb. if ecb_lock == 0, do not decriment.
 
+	// ecb state, coordinates relative to world_position
+	ECB ecb;
+	ECB prev_ecb;
 };
 
 
@@ -246,7 +256,7 @@ public:
 	// ! REMOVE SELF FROM camera_entity_list UPON DISTRUCTION ?!
 private:
 	glm::vec2 prev_positions[5]; //keep track of previous positions for trailing effects & colission. dont shift array, just shift current index and have the prev frame indices increase mod 5
-	glm::vec2 velocity;
+	
 
 	int cur_health;
 	Direction direction;
@@ -270,6 +280,7 @@ private:
 */
 class Scene
 {
+friend class Entity; //this is for accessing stage data; make Entity a friend of stage class in the future?
 public:
 	Scene();
 	~Scene();
@@ -302,6 +313,7 @@ private:
     //EnergyState energys[16]; //up to 4 energies active per player?
 	//Item items[10]
 	//Enemy enimies[10]
+
 };
 }
 
