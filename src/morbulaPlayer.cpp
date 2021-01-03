@@ -18,12 +18,21 @@ mbl::Player::Player(
 void mbl::Player::rollBackState(/* some pointer to a state*/){
     
 };
-void mbl::Player::computeNextState(){
-    //assuming airborne
-    velocity.y -= pa.gravity;
-    if(velocity.y < pa.slow_fall_velocity_max){
-        velocity.y = pa.slow_fall_velocity_max;
+void mbl::Player::computeNextState(mbl::Stage* stage){
+    
+    bool airborne = surface_id == -1;
+
+    //LOG("surface_id of player: ")LOG(surface_id); LOG("\n")
+    if(airborne){
+        velocity.y -= pa.gravity;
+        if(velocity.y < pa.slow_fall_velocity_max){
+            velocity.y = pa.slow_fall_velocity_max;
+        }
     }
+    else{
+        velocity = {0.0f,0.0f};
+    }
+
 
     // save prev ecb & position
     prev_world_position = world_position;

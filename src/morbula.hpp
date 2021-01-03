@@ -162,7 +162,7 @@ class Entity
 {
 public:
     Entity(EntityInit *, EntityAttribute *);
-	virtual void computeNextState() = 0;
+	virtual void computeNextState(mbl::Stage*) = 0;
 	virtual void rollBackState(/* some pointer to a state*/) = 0;
 	//virtual void render() = 0; //might not even to be virtual tbh
 	void DEBUG_ecbDraw(SDL_Renderer*, glm::vec2*, float, void ( SDL_Renderer*, glm::vec2*, float, float, float, float, float)) const;
@@ -197,7 +197,7 @@ protected:
 	EntityAttribute ea; // don't mutate contents
 
 	int ecb_lock; //decrimented every frame, if ecb_lock > 0, do not update ecb. if ecb_lock == 0, do not decriment.
-
+	bool prev_airborne;
 	// ecb state, coordinates relative to world_position
 	ECB ecb;
 	ECB prev_ecb;
@@ -250,7 +250,7 @@ class Player: public Entity
 {
 public:
 	Player(PlayerAttribute* /*, pointer to inputter */ ,EntityInit *,EntityAttribute*);  
-	void computeNextState();
+	void computeNextState(mbl::Stage*);
 	void rollBackState(/* some pointer to a state*/);
 
 	// ! REMOVE SELF FROM camera_entity_list UPON DISTRUCTION ?!
@@ -271,7 +271,14 @@ private:
 	int action_state_frame_count = 0; //how many frames has the player been in the current action state
 };
 
+/*****************
+Stage
+*****************/
+/*
+stage class will have methods for traversing surfaces, getting surface angles and world positions 
+stage class will also have a virtual computeNextState class 
 
+*/
 /*******************************************************
 * Scene                                                *
 *******************************************************/

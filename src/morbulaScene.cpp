@@ -99,36 +99,44 @@ void mbl::Scene::advanceGameState(){
             for(int i = 0; i < stage->surfaces.size(); ++i){
                 //narrow entity surface collision test
                 mbl::Surface surface = stage->surfaces.at(i);
+                mbl::Line ecb_transit;
+                float floor_position, wall_position_left, wall_position_right, ceiling_position;
                 
-                //test entity ecb floor collision
-                mbl::Line ecb_bottom_transit = entity->bottomWorldTravelLine();
-                float floor_position = surfaceCollidePoint(
-                    ecb_bottom_transit.p1.x,
-                    ecb_bottom_transit.p1.y,
-                    ecb_bottom_transit.p2.x,
-                    ecb_bottom_transit.p2.y,
-                    stage->vertices[surface.v1].x,
-                    stage->vertices[surface.v1].y,
-                    stage->vertices[surface.v2].x,
-                    stage->vertices[surface.v2].y
-                );
-                //test entity ecb left wall collision
-                //test entity ecb right wall collision
-                //test entity ecb ceiling collision
+                switch(surface.surface_type){
+                    case mbl::SurfaceType::ground:
+                        //test if entity ecb collides with ground
+                        ecb_transit = entity->bottomWorldTravelLine();
+                        floor_position = surfaceCollidePoint(
+                            ecb_transit.p1.x,
+                            ecb_transit.p1.y,
+                            ecb_transit.p2.x,
+                            ecb_transit.p2.y,
+                            stage->vertices[surface.v1].x,
+                            stage->vertices[surface.v1].y,
+                            stage->vertices[surface.v2].x,
+                            stage->vertices[surface.v2].y
+                        );
+                        //test entity ecb left wall collision
+                        //test entity ecb right wall collision
+                        //test entity ecb ceiling collision
 
-                //LOG("floor position: ") LOG(floor_position) LOG("\n");
+                        //LOG("floor position: ") LOG(floor_position) LOG("\n");
 
-                //will need 16 cases in theory, 
-                //cases range from no collisions to all collisions
-                //priority of cases will be very important
-                if(floor_position <= 0){ 
-                    entity->surface_id = i;
-                    entity->surface_position = floor_position;
+                        //will need 16 cases in theory, 
+                        //cases range from no collisions to all collisions
+                        //priority of cases will be very important
+                        //LOG("floor position of ent: ")LOG(floor_position)LOG("\n")
+                        if(floor_position >= 0){ 
+                            entity->surface_id = i;
+                            entity->surface_position = floor_position;
+                        }
+                        break;
+                    default:
+                        break;
                 }
-
             }
         }
-        entity->computeNextState();
+        entity->computeNextState(stage);
     }
 
 

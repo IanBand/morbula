@@ -37,9 +37,7 @@ class Inputter {
         float primary_stick_y;
         float secondary_stick_x;
         float secondary_stick_y;
-
-
-    
+        
 };
 
 class GCInputter : public Inputter{
