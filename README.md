@@ -1,5 +1,5 @@
 # Morbula
-![1/2/2021](https://imgur.com/a/zBuQxuv)
+![1/2/2021](https://i.imgur.com/PETLWES.gif)
 
 A barebones 2d game/collision engine for personal project(s). Mostly focused around creating interesting 2d platformer movement and co-op/versus gameplay mechanics.
 (It's prronounced morb-you-la, like morbid and nebula)
