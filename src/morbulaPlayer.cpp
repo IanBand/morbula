@@ -21,8 +21,6 @@ void mbl::Player::rollBackState(/* some pointer to a state*/){
 void mbl::Player::computeNextState(mbl::Stage* stage){
     
     bool airborne = surface_id == -1;
-
-    //LOG("surface_id of player: ")LOG(surface_id); LOG("\n")
     if(airborne){
         velocity.y -= pa.gravity;
         if(velocity.y < pa.slow_fall_velocity_max){
@@ -30,7 +28,20 @@ void mbl::Player::computeNextState(mbl::Stage* stage){
         }
     }
     else{
-        velocity = {0.0f,0.0f};
+
+        //might replace these with stage methods idk
+        mbl::Surface surface = stage->surfaces.at(surface_id);
+        glm::vec2 v1 = stage->vertices.at(surface.v1);
+        glm::vec2 v2 = stage->vertices.at(surface.v2);
+
+
+        //when bound to the ground, this is the formula for world pos (pretty sure); bind to different ecb points for other surface types
+        world_position = v1 + surface_position * glm::normalize(v2 - v1);
+        
+
+        // on first frame of air->surface
+        // velocity will be scalar projection of airborne velocity vector onto the surface, multiplied by some constant
+        velocity = glm::normalize(v2 - v1) * glm::dot(v2 - v1, velocity) * 0.05f;
     }
 
 
@@ -38,5 +49,6 @@ void mbl::Player::computeNextState(mbl::Stage* stage){
     prev_world_position = world_position;
     prev_ecb = ecb;
 
+    // in the case of air->surface transition, the world position is not incrimented by velocity..?
     world_position += velocity;
 };

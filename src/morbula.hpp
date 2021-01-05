@@ -29,9 +29,13 @@ struct BoundingBox{
 	float ecb_right;  // x-axis world distance between right of ecb diamond and base position
 	*/
 struct ECB{float bottom, top, mid, left, right;};
-struct Line{ 
+class Line{ 
+	public:
 	glm::vec2 p1; // current point in time
 	glm::vec2 p2; // prev point in time
+	float angle(){
+		return 0.0f;
+	};
 };
 /*
 class BoundingBox{
@@ -90,7 +94,13 @@ struct Surface
     // function pointer to an event
     // warp id
 
-    int v1; //index of vertex 1
+	//I have no idea if these rules are right, just that rules like this probably need to be in place because of how the collision function works
+	//v1 must be left of v2 if ground
+	//v1 must be right of v2 if ceiling
+	//v1 must be below v2 if left_wall
+	//v1 must be above v2 if right_wall
+
+    int v1; //index of vertex 1 
     int v2; //index of vertex 2
 	
 	// these tell grounded entities how to traverse* the stage when traveling over a surface boundary
