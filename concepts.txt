@@ -17,6 +17,8 @@ some possible solutions:
 
 * make pure wireframe models, these could even be 3d?
 
+* PRERENDERED SPRITES FROM 3D MODELS?!?!?!?!?!?!?
+
 
 
 
