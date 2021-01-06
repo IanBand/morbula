@@ -20,7 +20,12 @@ void mbl::Player::rollBackState(/* some pointer to a state*/){
 };
 void mbl::Player::computeNextState(mbl::Stage* stage){
     
-    bool airborne = surface_id == -1;
+    bool airborne = surface_id == -1; //scene method, aka "the collider" assigns a new surface_id to the entity if it has collided with one
+    mbl::Surface surface;
+    glm::vec2 v1, v2, surface_dir_unit_vec;
+    glm::vec2 zero_vec(0.0f, 0.0f);
+    float surface_length, deceleration;
+
     if(airborne){
         velocity.y -= pa.gravity;
         if(velocity.y < pa.slow_fall_velocity_max){
@@ -28,27 +33,60 @@ void mbl::Player::computeNextState(mbl::Stage* stage){
         }
     }
     else{
+        //entity is bound to a surface
 
-        //might replace these with stage methods idk
-        mbl::Surface surface = stage->surfaces.at(surface_id);
-        glm::vec2 v1 = stage->vertices.at(surface.v1);
-        glm::vec2 v2 = stage->vertices.at(surface.v2);
+        // get surface info
+        // might replace these with stage methods idk
+        surface = stage->surfaces.at(surface_id);
+        v1 = stage->vertices.at(surface.v1);
+        v2 = stage->vertices.at(surface.v2);
+        surface_dir_unit_vec = glm::normalize(v2 - v1);
+        surface_length = glm::distance(v2,v1); // this should be kept precalculated in the stage data, and only updated when the stage animates.
 
 
-        //when bound to the ground, this is the formula for world pos (pretty sure); bind to different ecb points for other surface types
-        world_position = v1 + surface_position * glm::normalize(v2 - v1);
-        
 
-        // on first frame of air->surface
-        // velocity will be scalar projection of airborne velocity vector onto the surface, multiplied by some constant
-        velocity = glm::normalize(v2 - v1) * glm::dot(v2 - v1, velocity) * 0.05f;
+        if(!prev_airborne){// first frame of landing on surface
+
+            // velocity will be scalar projection of airborne velocity vector onto the surface, multiplied by some constant
+            velocity = surface_dir_unit_vec * glm::dot(surface_dir_unit_vec, velocity) * 0.05f;
+
+                    //when bound to the ground, this is the formula for world pos (pretty sure); bind to different ecb points for other surface types
+            world_position = v1 + surface_position * surface_dir_unit_vec;
+        }
+
+        /*
+        if(glm::length(surface_position * surface_dir_unit_vec) > surface_length){
+            // transition to v2 connected surface, if same type
+        }
+        else if(surface_position < 0){
+            // transition to v1 connected surface, if same type
+        }
+        */
+
+        // bound to surface
+
+        /*
+        // decelerate player
+        if(velocity != zero_vec){
+            deceleration = 
+            if(velocity.x < )
+            velocity -= surface_dir_unit_vec
+        }
+        */
     }
 
 
     // save prev ecb & position
     prev_world_position = world_position;
     prev_ecb = ecb;
+    prev_airborne = airborne;
 
     // in the case of air->surface transition, the world position is not incrimented by velocity..?
-    world_position += velocity;
+    if(airborne){
+        world_position += velocity;
+    }
+    else{
+        world_position = v1 + surface_position * surface_dir_unit_vec;
+    }
+    
 };
