@@ -48,10 +48,10 @@ void mbl::Player::computeNextState(mbl::Stage* stage){
         if(!prev_airborne){// first frame of landing on surface
 
             // velocity will be scalar projection of airborne velocity vector onto the surface, multiplied by some constant
-            velocity = surface_dir_unit_vec * glm::dot(surface_dir_unit_vec, velocity) * 0.05f;
+            // velocity = surface_dir_unit_vec * glm::dot(surface_dir_unit_vec, velocity) * 0.05f;
 
-                    //when bound to the ground, this is the formula for world pos (pretty sure); bind to different ecb points for other surface types
-            world_position = v1 + surface_position * surface_dir_unit_vec;
+            //when bound to the ground, this is the formula for world pos (pretty sure); bind to different ecb points for other surface types
+            world_position = v1 + surface_position * surface_length * surface_dir_unit_vec;
         }
 
         /*
@@ -85,8 +85,10 @@ void mbl::Player::computeNextState(mbl::Stage* stage){
     if(airborne){
         world_position += velocity;
     }
+    /*
     else{
         world_position = v1 + surface_position * surface_dir_unit_vec;
     }
+    */
     
 };
