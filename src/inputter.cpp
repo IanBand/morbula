@@ -9,9 +9,9 @@ std::ostream& operator<<(std::ostream& os, const input::GCInputter& inp){
             << ", attack1: " << inp.attack1   << ", attack2: " << inp.attack2
             << ", aim_modifier: " << inp.aim_modifier << ", shield: " << inp.shield
             << ", grab: " << inp.grab << ", cancel: " << inp.cancel << std::endl
-            << "left analog: " << inp.left_analog << " right analog: " << inp.right_analog << std::endl
-            << "primary stick: (" << inp.primary_stick_x << ", " << inp.primary_stick_y << ")" << std::endl
-            << "secondary stick: (" << inp.secondary_stick_x << ", " << inp.secondary_stick_y << ")";
+            << "left analog: " << inp.left_analog[inp.cur] << " right analog: " << inp.right_analog[inp.cur] << std::endl
+            << "primary stick: (" << inp.primary_stick_x[inp.cur] << ", " << inp.primary_stick_y[inp.cur] << ")" << std::endl
+            << "secondary stick: (" << inp.secondary_stick_x[inp.cur] << ", " << inp.secondary_stick_y[inp.cur] << ")";
         return os;
 };
 
@@ -20,6 +20,9 @@ input::GCInputter::GCInputter(GCPort _port){
 };
 void input::GCInputter::getInputs(int frame){
     //TODO: map start button
+
+    cur = frame & 1;
+    prev = (cur + 1) & 1;
 
     // ensure that the gamecube status buffer is updated only once per frame
     if(last_poll_frame != frame){
@@ -49,16 +52,16 @@ void input::GCInputter::getInputs(int frame){
     virtual_inputs[analogR] |= (adapter_buffer[port].triggerR > 4);
 
     //could do this in a loop or memcopy or somethin like above
-    
-    left_analog       = adapter_buffer[port].triggerL; // could instead subtract "analog press threshold" here, & calc virtual analog L/R binary input from these values 
-    right_analog      = adapter_buffer[port].triggerR;
-    primary_stick_x   = adapter_buffer[port].mainStickHorizontal;
-    primary_stick_y   = adapter_buffer[port].mainStickVertical;
-    secondary_stick_x = adapter_buffer[port].cStickHorizontal;
-    secondary_stick_y = adapter_buffer[port].cStickVertical;
+    // x % 2 == x & 1, write to different parts of the buffer based on frame parity
+    left_analog[cur]       = adapter_buffer[port].triggerL; // could instead subtract "analog press threshold" here, & calc virtual analog L/R binary input from these values 
+    right_analog[cur]      = adapter_buffer[port].triggerR;
+    primary_stick_x[cur]   = adapter_buffer[port].mainStickHorizontal;
+    primary_stick_y[cur]   = adapter_buffer[port].mainStickVertical;
+    secondary_stick_x[cur] = adapter_buffer[port].cStickHorizontal;
+    secondary_stick_y[cur] = adapter_buffer[port].cStickVertical;
 
     connected = adapter_buffer[port].connected;
 
-    //std::cout << *this << std::endl;
+    std::cout << *this << std::endl;
 
 };

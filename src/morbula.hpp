@@ -224,7 +224,13 @@ enum PlayerActionState : int
 	//walljumps should be a product of "checking"
 	idle,
 	walk_1,
-	run
+	walk_2,
+	walk_3,
+	dash,
+	run,
+	freefall,
+	spinfall,
+	jumpsquat
 };
 
 inline const bool left = true;

@@ -41,6 +41,7 @@ int main( int argc, char *argv[] )
 
 	uint32_t prev_frame_ts;
 	uint32_t cur_ticks;
+	bool debug_pause = false;
 
 	//global frame number
 	uint32_t frame_number = 0;
@@ -88,13 +89,27 @@ int main( int argc, char *argv[] )
 				while( SDL_PollEvent( &e ) != 0 )
 				{
 					//User requests quit
-					if( e.type == SDL_QUIT )
-					{
+					if( e.type == SDL_QUIT ){
 						quit = true;
 					}
-				}
+					//user presses a key
+					else if(e.type == SDL_KEYDOWN){
+                        //do shit based on key press
+                        switch( e.key.keysym.sym ){
+							case SDLK_SPACE: // play/pause
+								debug_pause = !debug_pause;
+							default:
+								break;
+						};
 
-				// Get inputs
+					}
+
+				}
+				
+				if(debug_pause)	continue;
+				
+
+				// Get (only gamecube?) inputs...
 				for(input::Inputter *input : inputs ){
 					input->getInputs(frame_number);
 					//check if start button is pushed on any inputter  

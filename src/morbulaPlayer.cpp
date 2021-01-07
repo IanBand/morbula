@@ -19,19 +19,55 @@ void mbl::Player::rollBackState(/* some pointer to a state*/){
     
 };
 void mbl::Player::computeNextState(mbl::Stage* stage){
+
+    static glm::vec2 zero_vec(0.0f, 0.0f);
     
     bool airborne = surface_id == -1; //scene method, aka "the collider" assigns a new surface_id to the entity if it has collided with one
     mbl::Surface surface;
     glm::vec2 v1, v2, surface_dir_unit_vec;
-    glm::vec2 zero_vec(0.0f, 0.0f);
-    float surface_length, deceleration;
+    float surface_length;
 
-    if(airborne){
-        velocity.y -= pa.gravity;
-        if(velocity.y < pa.slow_fall_velocity_max){
-            velocity.y = pa.slow_fall_velocity_max;
-        }
+
+    switch(action_state){
+        default: 
+            break;
+        case idle:
+            break;
+        case walk_1:
+        case walk_2:
+        case walk_3:
+            break;
+        case dash:
+            break;
+        case run:
+            break;
+        case freefall:
+            // aerial drift
+            //if glm::length(stick_val.x) < some_stick_zone_cutoff
+            //      stick_val
+            //velocity += stick_val * pa.
+
+            //fastfall
+            break;
+        case spinfall:
+            // aerial drift
+            break;
     }
+    
+    // save prev ecb & position
+    prev_world_position = world_position;
+    prev_ecb = ecb;
+    prev_airborne = airborne;
+	
+    if(prev_action_state == action_state)
+        ++action_state_frame_count;
+    prev_action_state = action_state;
+
+
+    // old shit
+
+    /*
+
     else{
         //entity is bound to a surface
 
@@ -54,40 +90,34 @@ void mbl::Player::computeNextState(mbl::Stage* stage){
             world_position = v1 + surface_position * surface_length * surface_dir_unit_vec;
         }
 
-        /*
+        
         if(glm::length(surface_position * surface_dir_unit_vec) > surface_length){
             // transition to v2 connected surface, if same type
         }
         else if(surface_position < 0){
             // transition to v1 connected surface, if same type
         }
-        */
+        
 
         // bound to surface
 
-        /*
+        
         // decelerate player
         if(velocity != zero_vec){
             deceleration = 
             if(velocity.x < )
             velocity -= surface_dir_unit_vec
         }
-        */
+        
     }
+    
 
 
-    // save prev ecb & position
-    prev_world_position = world_position;
-    prev_ecb = ecb;
-    prev_airborne = airborne;
 
-    // in the case of air->surface transition, the world position is not incrimented by velocity..?
+
+    
     if(airborne){
         world_position += velocity;
-    }
-    /*
-    else{
-        world_position = v1 + surface_position * surface_dir_unit_vec;
     }
     */
     

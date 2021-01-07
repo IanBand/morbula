@@ -31,12 +31,15 @@ class Inputter {
         attack2, aim_modifier, 
         shield, grab, cancel;
 
-        float left_analog;
-        float right_analog;
-        float primary_stick_x;
-        float primary_stick_y;
-        float secondary_stick_x;
-        float secondary_stick_y;
+        int cur, prev;
+
+        // each buffer holds a current and previous input
+        float left_analog[2];
+        float right_analog[2];
+        float primary_stick_x[2];
+        float primary_stick_y[2];
+        float secondary_stick_x[2];
+        float secondary_stick_y[2];
         
 };
 
