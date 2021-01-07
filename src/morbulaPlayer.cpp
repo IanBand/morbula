@@ -53,6 +53,10 @@ void mbl::Player::computeNextState(mbl::Stage* stage){
             // aerial drift
             break;
     }
+
+    // temp shit just to make the player move
+    velocity = {0.001f, -0.002f};
+    world_position += velocity;
     
     // save prev ecb & position
     prev_world_position = world_position;
