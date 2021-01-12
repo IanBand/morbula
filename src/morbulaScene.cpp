@@ -93,6 +93,11 @@ void mbl::Scene::advanceGameState(){
 
     for(mbl::Entity *entity : entities ){
 
+
+        // entity->computeNextStatePhase1(stage);
+        // test stage collision
+        // entity->computeNextStatePhase2(stage);
+
         if(entity->surface_id == -1){ // if entity is airborn, i.e. not bound to a surface
             
             //TODO: need a broad surface collide test
@@ -102,6 +107,9 @@ void mbl::Scene::advanceGameState(){
                 mbl::Line ecb_transit;
                 float floor_position, wall_position_left, wall_position_right, ceiling_position;
                 
+
+
+
                 switch(surface.surface_type){
                     case mbl::SurfaceType::ground:
                         //test if entity ecb collides with ground

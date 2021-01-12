@@ -71,6 +71,17 @@ void mbl::Entity::DEBUG_ecbDraw(
     float scale, 
     void drawLine( SDL_Renderer*, glm::vec2*, float, float, float, float, float)
 )const{
+    /*
+    mbl::Color sc = mbl::lime;
+    SDL_SetRenderDrawColor( ctx, sc.r, sc.g, sc.b, 0xff );
+    SDL_RenderDrawLine( ctx, 
+        worldToCameraX(world_position.x),
+        worldToCameraY(world_position.y + ecb.bottom),
+        worldToCameraX(prev_world_position.x),
+        worldToCameraY(prev_world_position.y + prev_ecb.bottom)
+    );
+    */
+    
     //draw ecb diamond
     // bottom -> right
     drawLine(ctx, camera_pos, scale, 
@@ -130,6 +141,7 @@ void mbl::Entity::DEBUG_ecbDraw(
         prev_world_position.x,
         prev_world_position.y + prev_ecb.bottom
     );
+    
 };
 
 void mbl::Entity::DEBUG_BBDraw(

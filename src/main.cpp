@@ -44,7 +44,7 @@ int main( int argc, char *argv[] )
 
 
 	bool debug_pause = false;
-	bool debug_advance_one_frame = false;
+	bool debug_frame_advance = false;
 
 	//global frame number
 	uint32_t frame_number = 0;
@@ -102,7 +102,7 @@ int main( int argc, char *argv[] )
 							case SDLK_SPACE: // play/pause
 								debug_pause = !debug_pause;
 							case SDLK_RIGHT:
-								debug_advance_one_frame = true;
+								debug_frame_advance = true;
 							default:
 								break;
 						};
@@ -111,8 +111,8 @@ int main( int argc, char *argv[] )
 
 				}
 				
-				if(debug_pause && !debug_advance_one_frame)	continue;
-				debug_advance_one_frame = false;
+				if(debug_pause && !debug_frame_advance)	continue;
+				debug_frame_advance = false;
 				
 
 				// Get (only gamecube?) inputs...

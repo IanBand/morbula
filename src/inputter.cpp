@@ -62,6 +62,6 @@ void input::GCInputter::getInputs(int frame){
 
     connected = adapter_buffer[port].connected;
 
-    std::cout << *this << std::endl;
+    std::cout << *this << std::endl << std::endl;
 
 };

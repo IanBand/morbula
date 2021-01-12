@@ -210,6 +210,7 @@ protected:
 	bool prev_airborne;
 	// ecb state, coordinates relative to world_position
 	ECB ecb;
+	ECB projected_ecb; 
 	ECB prev_ecb;
 };
 
